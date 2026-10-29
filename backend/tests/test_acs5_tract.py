@@ -128,6 +128,28 @@ def test_uncomputable_margin_makes_the_margin_null(lake):
     assert pd.isna(row.percent_moe)
 
 
+def test_zero_estimates_count_only_their_largest_margin(lake):
+    # Of the 15 uninsured codes, 5 are 8 and 10 are zero. One zero code has a
+    # margin of 25 and the rest 10, so the sum's margin is
+    # sqrt(10^2 * 5 + 25^2): every nonzero margin, plus the largest zero one.
+    estimates = _c27016_fixture(uninsured_count=8)
+    zero = next(c for c in uninsured(BELOW_138) if estimates[c][0] == 0)
+    estimates[zero] = (0, 25)
+    df = _clean(lake, estimates).set_index("variable")
+    num_moe = math.sqrt(10**2 * 5 + 25**2)
+    p = 40 / 500
+    expected = 100 * math.sqrt(num_moe**2 - p**2 * 40**2) / 500
+    assert df.loc["No health insurance", "percent_moe"] == round(expected, 1)
+
+
+def test_full_share_margin_is_not_zero(lake):
+    df = _clean(lake, {"B17001_001": (40, 12), "B17001_002": (40, 12)})
+    row = df[df.variable == "Below poverty level"].iloc[0]
+
+    assert row.percent == 100.0
+    assert row.percent_moe == round(100 * math.sqrt(12**2 + 12**2) / 40, 1)
+
+
 def test_suppressed_component_makes_the_indicator_null(lake):
     df = _clean(
         lake, {"B17001_001": (1000, 100), "B17001_002": (-666666666, -222222222)}
