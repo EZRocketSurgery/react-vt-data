@@ -96,11 +96,12 @@ def tract_sql() -> str:
             SELECT
                 year, NAME, state, county, tract, code,
                 CASE WHEN estimate >= 0 THEN estimate END AS est,
-                -- -555555555 / -222222222: the estimate is controlled, so its
-                -- margin of error is zero; other negative codes are missing.
+                -- -555555555: the estimate is controlled, so its margin of
+                -- error is zero. Other negative codes are missing, e.g.
+                -- -222222222: too few sample cases to compute a margin.
                 CASE
                     WHEN moe >= 0 THEN moe
-                    WHEN moe IN (-555555555, -222222222) THEN 0
+                    WHEN moe = -555555555 THEN 0
                 END AS moe
             FROM lake.RAW.acs5_tract
         ),
