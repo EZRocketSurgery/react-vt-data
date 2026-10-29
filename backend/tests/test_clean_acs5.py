@@ -28,7 +28,7 @@ BURLINGTON_GEOID = "5000710675"
 _RAW_SCHEMA = """
     year BIGINT, NAME VARCHAR, Variable_Code VARCHAR, Source_Label VARCHAR,
     Category VARCHAR, Subcategory VARCHAR, Variable VARCHAR, Measure VARCHAR,
-    Value VARCHAR, geo_type VARCHAR, state VARCHAR, county VARCHAR
+    Value VARCHAR, geo_type VARCHAR, state VARCHAR, county VARCHAR, MOE VARCHAR
 """
 
 # (year, Variable_Code, Value) for Burlington's colliding DP04 SMOC medians.
@@ -66,9 +66,10 @@ def _housing_rows(rows):
             {year}, '{BURLINGTON}', '{code}',
             'Estimate!!SELECTED MONTHLY OWNER COSTS (SMOC)!!Median (dollars)',
             'SELECTED MONTHLY OWNER COSTS (SMOC)', 'Median (dollars)', 'Total',
-            'Estimate', '{value}', 'county_subdivision', '50', '007'
+            'Estimate', '{value}', 'county_subdivision', '50', '007',
+            {f"'{moe[0]}'" if moe else "NULL"}
         )"""
-        for year, code, value in rows
+        for year, code, value, *moe in rows
     )
     return f"""
         CREATE TABLE lake.RAW.acs5_housing ({_RAW_SCHEMA});
@@ -188,3 +189,35 @@ def test_dp_value_col():
     assert df["value"].dtype.kind == "f"
     assert df["value"].min() >= 0
     assert df["value"].max() < 666666666
+
+
+def test_dp_margins_are_numeric_and_labeled():
+    con = _base_con()
+    con.execute(
+        _housing_rows(
+            [
+                (2023, "DP04_0100E", "1800", "90"),  # CV 3% -> high
+                (2023, "DP04_0101E", "40", "-555555555"),  # controlled -> 0
+                (2023, "DP04_0102E", "0", "-222222222"),  # not computable
+                (2023, "DP04_0103E", "-666666666", "-222222222"),
+                (2023, "DP04_0104E", "500", "(X)"),
+                (2023, "DP04_0105E", "100", "60"),  # CV 36% -> low
+            ]
+        )
+    )
+    build_dp_combined(con)
+
+    rows = con.execute(
+        """
+        SELECT variable_code, value, moe, reliability
+        FROM lake.CLEANED.acs5_dp_combined_tidy ORDER BY variable_code
+        """
+    ).fetchall()
+    assert rows == [
+        ("DP04_0100E", 1800.0, 90.0, "high"),
+        ("DP04_0101E", 40.0, 0.0, "high"),
+        ("DP04_0102E", 0.0, None, None),
+        ("DP04_0103E", None, None, None),
+        ("DP04_0104E", 500.0, None, None),
+        ("DP04_0105E", 100.0, 60.0, "low"),
+    ]

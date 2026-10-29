@@ -31,6 +31,7 @@ from data_cleaning.geo_lookup import (
     build_geo_lookups,
     write_table,
 )
+from data_cleaning.margins import reliability_sql
 
 # Raw identifier columns every base query must expose (see `acs_geo_sql`)
 KEYS = "year, NAME, geo_type, state, county"
@@ -99,12 +100,18 @@ def in_list(values: list[str]) -> str:
     return ", ".join(f"'{v}'" for v in values)
 
 
+def with_moe(column: str) -> tuple[str, str, str]:
+    """A measure column with its margin of error and reliability columns."""
+    return (column, f"{column}_moe", f"{column}_reliability")
+
+
 def single_variable(
     source: str,
     variables: list[str],
     out_col: str,
     value_col: str = "Value",
     keep_variable: bool = False,
+    moe_col: str | None = None,
 ) -> str:
     """
     Filters a RAW lake table to Key, variable (if true), and value columns
@@ -115,6 +122,9 @@ def single_variable(
         out_col:
         value_col: Column name containing the tracked value over time.
         keep_variable: (T/F) if you want to keep the variable column. Best for timeseries tables tracking multiple variables.
+        moe_col: Column holding value_col's 90% margin of error, written as
+            `{out_col}_moe` with its `{out_col}_reliability` label (see
+            :func:`with_moe`). None leaves both out.
 
     Returns:
         str: A SQL query which filters the source table to contain the time series variable(s)
@@ -122,8 +132,15 @@ def single_variable(
 
     """
     variable = ", Variable" if keep_variable else ""
+    moe = (
+        f", {numeric(moe_col)} AS {out_col}_moe, "
+        f"{reliability_sql(numeric(value_col), numeric(moe_col))} "
+        f"AS {out_col}_reliability"
+        if moe_col
+        else ""
+    )
     return f"""--sql
-        SELECT {KEYS}{variable}, {numeric(value_col)} AS {out_col}
+        SELECT {KEYS}{variable}, {numeric(value_col)} AS {out_col}{moe}
         FROM lake.RAW.{source}
         WHERE Variable IN ({in_list(variables)})
         """
@@ -318,34 +335,48 @@ CONFIGS: dict[str, TimeSeries] = {
     # Median age
     "median_age": TimeSeries(
         table="acs5Demographics_medianAge_timeseries",
-        base=single_variable("demographics", ["Median Age"], "median_age"),
-        columns=("median_age",),
+        base=single_variable(
+            "demographics", ["Median Age"], "median_age", moe_col="Value_MOE"
+        ),
+        columns=with_moe("median_age"),
     ),
     # Median Household Income
     "median_hh_income": TimeSeries(
         table="acs5Economics_medianHouseholdIncome_timeseries",
         base=single_variable(
-            "economic", ["Median Household Income"], "median_household_income"
+            "economic",
+            ["Median Household Income"],
+            "median_household_income",
+            moe_col="Value_MOE",
         ),
-        columns=("median_household_income",),
+        columns=with_moe("median_household_income"),
     ),
     # Median Home Value
     "median_home_value": TimeSeries(
         table="acs5Housing_medianHomeValue_timeseries",
-        base=single_variable("housing", ["Median Home Value"], "median_home_value"),
-        columns=("median_home_value",),
+        base=single_variable(
+            "housing", ["Median Home Value"], "median_home_value", moe_col="Value_MOE"
+        ),
+        columns=with_moe("median_home_value"),
     ),
     # Per Capita Income
     "per_capita_income": TimeSeries(
         table="acs5Economics_perCapitaIncome_timeseries",
-        base=single_variable("economic", ["Per Capita Income"], "per_capita_income"),
-        columns=("per_capita_income",),
+        base=single_variable(
+            "economic", ["Per Capita Income"], "per_capita_income", moe_col="Value_MOE"
+        ),
+        columns=with_moe("per_capita_income"),
     ),
     # Total Housing Units
     "total_housing_units": TimeSeries(
         table="acs5Housing_housingUnits_timeseries",
-        base=single_variable("housing", ["Total Housing Units"], "total_housing_units"),
-        columns=("total_housing_units",),
+        base=single_variable(
+            "housing",
+            ["Total Housing Units"],
+            "total_housing_units",
+            moe_col="Value_MOE",
+        ),
+        columns=with_moe("total_housing_units"),
     ),
     # Vacancy Rates
     "vacancy_rate": TimeSeries(
@@ -356,8 +387,9 @@ CONFIGS: dict[str, TimeSeries] = {
             "percent",
             value_col="Percent",
             keep_variable=True,
+            moe_col="Percent_MOE",
         ),
-        columns=("Variable", "percent"),
+        columns=("Variable", *with_moe("percent")),
     ),
     # Population Change (%)
     "population_change": TimeSeries(

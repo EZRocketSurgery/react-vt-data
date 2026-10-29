@@ -10,12 +10,13 @@
 
     Writes lake.CLEANED.acs5_tract_tidy: year, geoid, county_fips, county,
     name, geo_type, section, variable, value (count), universe, percent,
-    percent_moe.
+    percent_moe, percent_reliability (see data_cleaning/margins.py).
 """
 
 import duckdb
 
 from data_cleaning.geo_lookup import build_geo_lookups, write_table
+from data_cleaning.margins import reliability_sql
 
 TABLE_NAME = "acs5_tract_tidy"
 
@@ -159,6 +160,16 @@ def tract_sql() -> str:
     """
 
 
+def reliable_tract_sql() -> str:
+    """:func:`tract_sql` with a reliability label for each percent."""
+    return f"""--sql
+        SELECT
+            *,
+            {reliability_sql("percent", "percent_moe")} AS percent_reliability
+        FROM ({tract_sql()})
+    """
+
+
 def main(con: duckdb.DuckDBPyConnection):
     build_geo_lookups(con)
-    write_table(con, TABLE_NAME, tract_sql())
+    write_table(con, TABLE_NAME, reliable_tract_sql())

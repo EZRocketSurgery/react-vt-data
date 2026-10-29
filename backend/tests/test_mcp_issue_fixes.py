@@ -296,3 +296,48 @@ def test_new_query_contract_roundtrips_over_real_mcp_transport(service, mode):
             )
 
     asyncio.run(run())
+
+
+@pytest.fixture
+def margins_service(tmp_path):
+    warehouse = tmp_path / "margins.duckdb"
+    with duckdb.connect(str(warehouse)) as conn:
+        conn.execute("""
+            CREATE TABLE acs5Demographics_medianAge_timeseries(
+                year VARCHAR, geoid VARCHAR, county_fips VARCHAR, county VARCHAR,
+                name VARCHAR, geo_type VARCHAR, median_age DOUBLE,
+                median_age_moe DOUBLE, median_age_reliability VARCHAR
+            );
+            INSERT INTO acs5Demographics_medianAge_timeseries VALUES
+                ('2023', '50', NULL, NULL, 'Vermont', 'state', 43.2, 0.2, 'high');
+            CREATE TABLE acs5_demographics_tidy(
+                year VARCHAR, geoid VARCHAR, name VARCHAR, geo_type VARCHAR,
+                county VARCHAR, county_fips VARCHAR, section VARCHAR,
+                variable VARCHAR, value DOUBLE, value_moe DOUBLE,
+                value_reliability VARCHAR, percent DOUBLE, percent_moe DOUBLE,
+                percent_reliability VARCHAR
+            );
+            INSERT INTO acs5_demographics_tidy VALUES
+                ('2023', '50', 'Vermont', 'state', NULL, NULL, 'Age/Sex',
+                 'Under 18', 117177, 1220, 'high', 18.2, 0.2, 'high');
+        """)
+    return DataToolService(warehouse)
+
+
+def test_margins_come_back_with_their_estimates(margins_service):
+    [variable] = margins_service.call(
+        "search_variables", {"dataset_id": "acs5_ts_median_age"}
+    )["variables"]
+    series = margins_service.call(
+        "query_data",
+        {"dataset_id": "acs5_ts_median_age", "variable_ids": [variable["variable_id"]]},
+    )
+    assert series["rows"][0]["median_age"] == 43.2
+    assert series["rows"][0]["median_age_moe"] == 0.2
+    assert series["units"] == {"median_age": "years", "median_age_moe": "years"}
+
+    tidy = margins_service.call(
+        "query_data", {"dataset_id": "acs5_demographics", "measures": ["percent"]}
+    )
+    assert "value" not in tidy["columns"]
+    assert (tidy["rows"][0]["percent"], tidy["rows"][0]["percent_moe"]) == (18.2, 0.2)

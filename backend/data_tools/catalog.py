@@ -40,19 +40,41 @@ class Dataset:
 
 
 ACS_URL = "https://www.census.gov/programs-surveys/acs/data.html"
+_ACS_PERIOD = (
+    "ACS five-year estimates: year is the final year of the five-year period, "
+    "not a single-year count. Adjacent periods overlap."
+)
+_ACS_NULLS = (
+    "Unavailable Census values and non-finite numbers are returned as null; "
+    "null does not mean zero. Counts, percentages, and medians are separate measures."
+)
 ACS_CAVEATS = (
-    (
-        "ACS five-year estimates: year is the final year of the five-year period, "
-        "not a single-year count. Adjacent periods overlap."
-    ),
+    _ACS_PERIOD,
     (
         "Margins of error are not included in these cleaned tables. Differences "
         "alone do not establish statistical significance."
     ),
+    _ACS_NULLS,
+)
+# For tables that carry *_moe columns.
+ACS_MOE_CAVEATS = (
+    _ACS_PERIOD,
     (
-        "Unavailable Census values and non-finite numbers are returned as null; "
-        "null does not mean zero. Counts, percentages, and medians are separate measures."
+        "Columns ending in _moe are 90% margins of error: the estimate plus or "
+        "minus its margin is the 90% confidence interval; percent_moe is in "
+        "percentage points. Margins of sums and percentages are Census "
+        "approximations. For estimates from periods that do not overlap (such as "
+        "2018 and 2023), or from separate places in the same period, a difference "
+        "larger than the square root of the sum of their squared margins is "
+        "significant at 90% confidence. That test does not apply to adjacent "
+        "years, whose five-year periods share four years, or to a place and an "
+        "area that contains it. A null margin means the Census could not compute one. Each margin has a "
+        "reliability label (high, medium, low) from the coefficient of variation, "
+        "CV = (moe / 1.645) / estimate: under 15% high, over 30% low; a zero "
+        "estimate with a nonzero margin is low. Treat low-reliability estimates "
+        "as rough, especially for small towns."
     ),
+    _ACS_NULLS,
 )
 ZONING_URL = "https://geodata.vermont.gov/datasets/VCGI::vt-zoning-areas/about"
 ZONING_CAVEATS = (
@@ -96,13 +118,18 @@ def _acs_tidy(key: str, label: str, description: str, table: str) -> Dataset:
         table,
         ACS_URL,
         "U.S. Census Bureau, American Community Survey five-year estimates",
-        ACS_CAVEATS,
+        ACS_MOE_CAVEATS,
         "tidy",
         "year",
         "name",
         "geo_type",
         variable_columns=("section", "variable"),
-        value_columns={"value": "varies by variable", "percent": "percent"},
+        value_columns={
+            "value": "varies by variable",
+            "value_moe": "varies by variable",
+            "percent": "percent",
+            "percent_moe": "percentage points",
+        },
         filter_columns=(
             "year",
             "name",
@@ -112,6 +139,8 @@ def _acs_tidy(key: str, label: str, description: str, table: str) -> Dataset:
             "geoid",
             "section",
             "variable",
+            "value_reliability",
+            "percent_reliability",
         ),
     )
 
@@ -131,6 +160,9 @@ def _acs_series(
     # ACS series carry the standard geoid/county_fips identifiers; `county` is
     # False for tables built with `with_county=False` in clean_acs5_timeseries.
     identifiers = ("geoid", "county_fips") + (("county",) if county else ())
+    # Series with <measure>_moe columns also carry <measure>_reliability.
+    margins = [c.removesuffix("_moe") for c in values if c.endswith("_moe")]
+    acs_caveats = ACS_MOE_CAVEATS if margins else ACS_CAVEATS
     return Dataset(
         f"acs5_ts_{key}",
         label,
@@ -145,7 +177,7 @@ def _acs_series(
         (
             ("Historic boundaries and coverage can change between censuses.",)
             if historic
-            else ACS_CAVEATS
+            else acs_caveats
         )
         + caveats,
         "tidy" if dimensions else "wide",
@@ -157,7 +189,8 @@ def _acs_series(
         value_columns=values,
         filter_columns=("year", "name", "geo_type")
         + dimensions
-        + (("geoid", "county_fips", "County") if historic else identifiers),
+        + (("geoid", "county_fips", "County") if historic else identifiers)
+        + tuple(f"{measure}_reliability" for measure in margins),
     )
 
 
@@ -388,7 +421,7 @@ _DATASET_LIST = [
         "median_age",
         "Median age",
         "acs5Demographics_medianAge_timeseries",
-        {"median_age": "years"},
+        {"median_age": "years", "median_age_moe": "years"},
     ),
     _acs_series(
         "age_dependency_ratio",
@@ -400,13 +433,16 @@ _DATASET_LIST = [
         "median_home_value",
         "Median home value",
         "acs5Housing_medianHomeValue_timeseries",
-        {"median_home_value": "USD (year-specific dollars)"},
+        {
+            "median_home_value": "USD (year-specific dollars)",
+            "median_home_value_moe": "USD (year-specific dollars)",
+        },
     ),
     _acs_series(
         "vacancy_rates",
         "Vacancy rates",
         "acs5Housing_vacancyRates_timeseries",
-        {"percent": "percent"},
+        {"percent": "percent", "percent_moe": "percentage points"},
         dimensions=("Variable",),
     ),
     _acs_series(
@@ -427,13 +463,19 @@ _DATASET_LIST = [
         "household_income",
         "Median household income",
         "acs5Economics_medianHouseholdIncome_timeseries",
-        {"median_household_income": "USD (year-specific dollars)"},
+        {
+            "median_household_income": "USD (year-specific dollars)",
+            "median_household_income_moe": "USD (year-specific dollars)",
+        },
     ),
     _acs_series(
         "per_capita_income",
         "Per capita income",
         "acs5Economics_perCapitaIncome_timeseries",
-        {"per_capita_income": "USD (year-specific dollars)"},
+        {
+            "per_capita_income": "USD (year-specific dollars)",
+            "per_capita_income_moe": "USD (year-specific dollars)",
+        },
     ),
     _acs_series(
         "median_earnings",
@@ -456,7 +498,10 @@ _DATASET_LIST = [
         "housing_units",
         "Housing units",
         "acs5Housing_housingUnits_timeseries",
-        {"total_housing_units": "housing units"},
+        {
+            "total_housing_units": "housing units",
+            "total_housing_units_moe": "housing units",
+        },
     ),
     Dataset(
         "acs5_dp",
@@ -466,7 +511,7 @@ _DATASET_LIST = [
         "acs5_dp_combined_tidy",
         ACS_URL,
         "U.S. Census Bureau, ACS data profiles",
-        ACS_CAVEATS
+        ACS_MOE_CAVEATS
         + (
             (
                 "Estimate and percentage labels vary across source years. "
@@ -490,7 +535,11 @@ _DATASET_LIST = [
         "year",
         "name",
         variable_columns=("table", "category", "subcategory", "variable", "measure"),
-        value_columns={"value": "varies by variable and measure"},
+        # moe is value's published 90% margin of error; reliability labels it.
+        value_columns={
+            "value": "varies by variable and measure",
+            "moe": "same as value",
+        },
         filter_columns=(
             "name",
             "geo_type",
@@ -504,6 +553,7 @@ _DATASET_LIST = [
             "variable_code",
             "source_label",
             "year",
+            "reliability",
         ),
     ),
     Dataset(
@@ -959,6 +1009,14 @@ def dataset_lineage(dataset: Dataset) -> dict[str, Any]:
                 "code_reference": f"backend/data_collection/{source}.py",
             }
         }
+        if f"{output}_moe" in dataset.value_columns:
+            result["source_columns"][f"{output}_moe"] = {
+                "raw_table": f"RAW.{source}",
+                "raw_column": "Value_MOE",
+                "selectors": {"Variable": variable},
+                "census_codes": [code[:-1] + "M"],
+                "code_reference": f"backend/data_collection/{source}.py",
+            }
         result["transformations"].insert(0, f"backend/data_collection/{source}.py")
         if dataset.id == "acs5_ts_median_home_value":
             result["source_code_note"] += (
@@ -1020,7 +1078,18 @@ def dataset_lineage(dataset: Dataset) -> dict[str, Any]:
                 "raw_column": "Value",
                 "census_codes": [],
                 "selector_columns": list(dataset.variable_columns),
-            }
+            },
+            "moe": {
+                "raw_tables": [
+                    "RAW.acs5_social",
+                    "RAW.acs5_economic",
+                    "RAW.acs5_housing",
+                    "RAW.acs5_demographic",
+                ],
+                "raw_column": "MOE",
+                "census_codes": [],
+                "selector_columns": list(dataset.variable_columns),
+            },
         }
     return result
 
@@ -1317,12 +1386,32 @@ def decode_variable_id(dataset: Dataset, variable_id: str) -> dict[str, Any]:
     return selectors
 
 
+def margin_column(dataset: Dataset, measure: str) -> str | None:
+    """The column holding `measure`'s 90% margin of error, if it has one."""
+    columns = dataset.value_columns or {}
+    if f"{measure}_moe" in columns:
+        return f"{measure}_moe"
+    # Data profile rows keep their published margin as `moe` beside `value`.
+    if dataset.kind == "dp" and measure == "value" and "moe" in columns:
+        return "moe"
+    return None
+
+
+def with_margins(dataset: Dataset, measures: list[str]) -> list[str]:
+    """`measures` with each one's margin right after it. A margin means nothing
+    without its estimate, so the two always travel together."""
+    paired = []
+    for measure in measures:
+        paired += [measure, margin_column(dataset, measure)]
+    return list(dict.fromkeys(m for m in paired if m))
+
+
 def variable_units(dataset: Dataset, selectors: dict[str, Any]) -> dict[str, str]:
     """Resolve row-specific units without treating every ACS value as a count."""
     units = dict(dataset.value_columns or {})
     column = selectors.get("$column")
     if column:
-        return {column: units[column]}
+        return {c: units[c] for c in with_margins(dataset, [column])}
     variable = str(selectors.get("variable", ""))
     if dataset.id in {
         "acs5_demographics",
@@ -1383,6 +1472,7 @@ def variable_units(dataset: Dataset, selectors: dict[str, Any]) -> dict[str, str
             "Median Age": "years",
         }
         units["value"] = value_units.get(variable, "source-defined; unit unavailable")
+        units["value_moe"] = units["value"]
     if dataset.kind == "dp":
         measure = str(selectors.get("measure", "")).casefold()
         subcategory = str(selectors.get("subcategory", "")).strip().casefold()
@@ -1400,6 +1490,10 @@ def variable_units(dataset: Dataset, selectors: dict[str, Any]) -> dict[str, str
             units["value"] = "percent"
         else:
             units["value"] = "source-defined estimate; inspect variable label"
+        # A percent's margin (the PM code) is in percentage points.
+        units["moe"] = (
+            "percentage points" if units["value"] == "percent" else units["value"]
+        )
     return units
 
 
@@ -1450,10 +1544,13 @@ def search_variables(
             for row in rows
         ]
     else:
+        # A margin column comes back with its estimate, not as its own variable.
+        margins = {margin_column(dataset, c) for c in dataset.value_columns}
         selectors_list = [
             {"$column": column}
             for column in dataset.value_columns
-            if all(
+            if column not in margins
+            and all(
                 token in " ".join(re.findall(r"[a-z0-9]+", column.casefold()))
                 for token in tokens
             )

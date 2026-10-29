@@ -1,6 +1,7 @@
 import duckdb
 
 from data_cleaning.geo_lookup import inline_sql_unavailable
+from data_cleaning.margins import reliability_sql
 
 DP_TABLES = {
     "DP02": ("acs5_social", "dp_social"),
@@ -63,6 +64,8 @@ def _dp_select_sql(dp: str, raw_table_name: str) -> str:
             g.variable,
             g.measure,
             g.value,
+            g.moe,
+            {reliability_sql("g.value", "g.moe")} AS reliability,
             g."table",
             g.geo_type,
             g.geoid
@@ -81,6 +84,15 @@ def _dp_select_sql(dp: str, raw_table_name: str) -> str:
                     WHEN CAST(n.Value AS DOUBLE) IN ({inline_sql_unavailable(DP_UNAVAILABLE)}) THEN NULL
                     ELSE CAST(n.Value AS DOUBLE)
                 END AS "value",
+                -- The published margin of error (M for an estimate, PM for a
+                -- percent). -555555555: the estimate is controlled, so its
+                -- margin is zero; other codes (negative, "(X)") are missing.
+                CASE
+                    WHEN TRY_CAST(n.MOE AS DOUBLE) = -555555555 THEN 0
+                    WHEN TRY_CAST(n.MOE AS DOUBLE) IN ({inline_sql_unavailable(DP_UNAVAILABLE)})
+                        THEN NULL
+                    WHEN TRY_CAST(n.MOE AS DOUBLE) >= 0 THEN TRY_CAST(n.MOE AS DOUBLE)
+                END AS moe,
                 '{dp}' AS "table",
                 n.geo_type_norm AS geo_type,
                 CASE

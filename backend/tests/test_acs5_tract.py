@@ -150,6 +150,18 @@ def test_full_share_margin_is_not_zero(lake):
     assert row.percent_moe == round(100 * math.sqrt(12**2 + 12**2) / 40, 1)
 
 
+def test_percent_reliability_follows_the_coefficient_of_variation(lake):
+    # CV = (MOE / 1.645) / estimate: 1.2 / 1.645 / 15 = 5% -> high
+    high = _clean(lake, {"B17001_001": (10000, 100), "B17001_002": (1500, 120)})
+    # 4.8 / 1.645 / 15 = 19% -> medium; 9.5 / 1.645 / 15 = 39% -> low
+    medium = _clean(lake, {"B17001_001": (1000, 100), "B17001_002": (150, 50)})
+    low = _clean(lake, {"B17001_001": (200, 40), "B17001_002": (30, 20)})
+
+    assert high.percent_reliability.iloc[0] == "high"
+    assert medium.percent_reliability.iloc[0] == "medium"
+    assert low.percent_reliability.iloc[0] == "low"
+
+
 def test_suppressed_component_makes_the_indicator_null(lake):
     df = _clean(
         lake, {"B17001_001": (1000, 100), "B17001_002": (-666666666, -222222222)}
