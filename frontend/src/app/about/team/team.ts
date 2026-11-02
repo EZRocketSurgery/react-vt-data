@@ -54,12 +54,12 @@ export const TEAM: TeamMember[] = [
   //   bio: '',
   //   image: '/images/our-team/Duane_Millar_Barlow.jpg',
   // },
-  // {
-  //   name: 'Michael Robinette',
-  //   role: 'Software Developer',
-  //   bio: '',
-  //   image: '/images/our-team/Michael_Robinette.jpg',
-  // },
+  {
+    name: 'Michael Robinette',
+    role: 'Data Engineer',
+    bio: 'Michael Robinette is a PhD student in Complex Systems and Data Science, maintaining and developing data infrastructure for the Vermont Data Collaborative at the Leahy Institute for Rural Partnerships. His research uses natural language processing, network science, and mathematical modeling to study how information spreads and evolves as it moves through complex systems.',
+    image: '/images/our-team/Michael_Robinette.jpg',
+  },
   {
     name: 'Isabelle Serrano',
     role: 'Communication Lead, Vermont Data Collaborative',

@@ -1,4 +1,5 @@
 from .request_models import (
+    CountyComparisonRequest,
     DPSeriesRequest,
     FilterRequest,
     FilterSource,

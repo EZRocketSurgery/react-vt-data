@@ -54,6 +54,7 @@ CDC_SOURCE = FilterSource(
 # template path (relative to backend/) -> FilterSource list for sql_filter_block
 QUERY_TEMPLATE_SOURCES = {
     "query/sql/acs5/acs5_county_compare.sql": [WHERE_SOURCE],
+    "query/sql/acs5/acs5_dp_county_comparison.sql": [WHERE_SOURCE],
     "query/sql/acs5/acs5_tidy.sql": [WHERE_SOURCE],
     "query/sql/acs5/acs5_timeseries.sql": [WHERE_SOURCE],
     "query/sql/acs5/acs5_town_compare.sql": [WHERE_SOURCE],

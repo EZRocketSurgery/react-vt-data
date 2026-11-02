@@ -59,6 +59,10 @@ const links: NavItem[] = [
             link: '/data-comparison/dp-explorer',
             label: 'Census Variable Comparison',
           },
+          {
+            link: '/data-comparison/county-comparison',
+            label: 'Statewide County Comparison',
+          },
           // Legacy page (CDC only version of the variable relationship map)
           // {
           //   link: '/data-comparison/variable-comparison',

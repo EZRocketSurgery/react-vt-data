@@ -38,6 +38,10 @@ class DPSeriesRequest(BaseModel):
     year_max: int = MAX_YEAR
 
 
+class CountyComparisonRequest(BaseModel):
+    indicator: str
+
+
 join_types = Literal["inner", "left", "spatial_intersect"]
 
 

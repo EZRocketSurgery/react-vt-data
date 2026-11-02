@@ -1,9 +1,14 @@
 import logging
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from api.metadata_registry import get_metadata
-from api.models import DPSeriesRequest, FilterRequest, make_response
+from api.models import (
+    CountyComparisonRequest,
+    DPSeriesRequest,
+    FilterRequest,
+    make_response,
+)
 
 # TODO: Simplify / Refactor this script using the new query folder functions
 from query.acs5 import (
@@ -13,6 +18,11 @@ from query.acs5 import (
     get_poverty_uninsured_timeseries,
 )
 from query.core_functions import to_export_geo
+from query.county_comparison import comparison_query
+from query.county_comparison_indicators import (
+    INDICATORS_BY_KEY,
+    indicator_options,
+)
 from query.dp_variable_names import add_variable_names
 from query.production_db import get_db
 
@@ -486,3 +496,37 @@ def dp_combined_series(request: DPSeriesRequest):
     if "variable_code" in identity:
         rows = add_variable_names(rows)
     return make_response(data=rows, metadata=None)
+
+
+# ---------------------------------------------------------------------------
+# Statewide County Comparison: one indicator, every county + VT + US.
+# ---------------------------------------------------------------------------
+
+
+@router.get("/load/acs5-db/county-comparison/indicators")
+def county_comparison_indicators():
+    """Every indicator for the picker; available=False ones are coming soon."""
+    return make_response(data=indicator_options(), metadata=None)
+
+
+@router.post("/load/acs5-db/county-comparison")
+def county_comparison(request: CountyComparisonRequest):
+    """Return {place, geo_type, year, value} for each county, Vermont and the
+    United States, every year the indicator has data."""
+    indicator = INDICATORS_BY_KEY.get(request.indicator)
+    if indicator is None or not indicator.available:
+        raise HTTPException(404, f"Unknown indicator: {request.indicator}")
+    sql, params = comparison_query(indicator)
+    rows = DB.execute(sql, params).df()
+    return make_response(
+        data=rows,
+        # Source and caveats come from the registry; the rest describes the
+        # indicator picked.
+        metadata={
+            **get_metadata("DP TABLES"),
+            "label": indicator.label,
+            "topic": indicator.topic,
+            "description": indicator.description,
+            "units": indicator.units,
+        },
+    )
