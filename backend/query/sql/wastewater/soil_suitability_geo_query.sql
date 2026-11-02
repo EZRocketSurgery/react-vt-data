@@ -8,9 +8,9 @@ FROM (
         json_object(
             'type', 'Feature',
             'geometry',
-                ST_AsGeoJSON(
-                    ST_Simplify(g.geometry, 0.0001)
-                )::JSON,
+            ST_AsGeoJSON(
+                ST_Simplify(g.geometry, 0.0001)
+            )::JSON,
             'properties', json_object(
                 'Suitability', i.suitability,
                 'Acres', ROUND(i.acres, 2),

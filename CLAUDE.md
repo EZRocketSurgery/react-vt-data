@@ -28,11 +28,11 @@ npm run format:check # Check formatting without modifying
 uvicorn api.main:app --reload --port 6767  # API server on localhost:6767
 pip install -r requirements.txt            # Install dependencies
 streamlit run Home.py                      # Legacy Streamlit interface (not primary)
-uv run sqlfluff lint query/sql build/sql   # Lint the Jinja SQL templates
-uv run sqlfluff fix query/sql build/sql    # Auto-fix SQL lint issues
+uv run sqlfluff lint query/sql data_cleaning/sql   # Lint the Jinja SQL templates
+uv run sqlfluff fix query/sql data_cleaning/sql    # Auto-fix SQL lint issues
 ```
 
-SQL templates under `backend/query/sql/` and `backend/build/sql/` are Jinja
+SQL templates under `backend/query/sql/` and `backend/data_cleaning/sql/` are Jinja
 templates rendered by `query/sql_render.py`, which also holds the
 general-purpose filter compiler (it emits `$N` prepared-statement placeholders
 plus a params list — execute with `DB.execute(sql, params)`). Lint-time
@@ -72,7 +72,7 @@ template context lives in `backend/.sqlfluff`.
 
 - `api/routes/get_routes/get_filters.py` — `GET /load/mapping/{dataset}/filters` — returns hierarchical filter tree
 - `api/routes/get_routes/get_wholedata.py` — full dataset fetch with optional filters
-- `api/routes/post_routes/post_census.py` — Census/ACS-5 data
+- `api/routes/post_routes/post_acs5_db.py` — Census ACS-5 tidy and time-series data (`/load/acs5-db/...`)
 - `api/routes/post_routes/post_zoning.py` — Zoning data
 
 **Response model:** `api/models/response_models.py` — `APIResponse` with `data`, `tableData`, and `metadata` fields.
@@ -80,7 +80,7 @@ template context lives in `backend/.sqlfluff`.
 **Query layer (`query/`):**
 
 - `sql_render.py` — Jinja SQL rendering and the filter compiler (`sql_filter_block`, `compile_where`)
-- `timeseries_db.py` — DuckDB access to census time-series tables
+- `acs5.py` — ACS-5 tidy and time-series queries against `warehouse.duckdb`
 - `production_db.py` — lazy DuckDB connection
 
 **ETL census helpers:** `data_collection/census.py` (`tidy_census`, `split_name_col`).

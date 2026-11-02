@@ -11,9 +11,9 @@ SELECT
     c.county,
     ST_ASGEOJSON(ST_GeomFromWKB(c.geometry)) AS geometry
 FROM {{ table }} AS a
+-- County rows in the tidy tables carry no geoid (it's only populated for
+-- towns); the county FIPS is what identifies them.
 LEFT JOIN vt_county_lines_geom AS c
-    -- County rows in the tidy tables carry no geoid (it's only populated for
-    -- towns); the county FIPS is what identifies them.
     ON a.county_fips = c.geoid
 
 {{ where_string }}

@@ -2,7 +2,7 @@
 Diagnostic script for inspecting DuckLake table structure.
 
 Usage (from backend):
-python -m tests.test_lake
+python -m tests.inspect_lake
 """
 
 from lake_build import get_connection

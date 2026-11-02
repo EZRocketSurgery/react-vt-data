@@ -569,14 +569,11 @@ plus a known historic population value. It is skipped in the fixture-only run
 unless `MCP_LIVE_WAREHOUSE` is set. Live-warehouse and deployed-proxy checks
 complement fixture tests; fixtures cannot establish the freshness of deployed data.
 
-The existing whole-backend suite is not green on the pre-MCP baseline commit
-`3a50bf0`: against the same warehouse, an isolated baseline run excluding the
-DuckLake diagnostic reported 105 passed and 30 failed. Those failures involve
-legacy Census table names and SQL template/expectation mismatches. In addition,
-`tests/test_lake.py` initializes DuckLake at import time and requires its extension
-and data; it is not an isolated unit test. The MCP workflow runs the new fixture
-suite explicitly. A passing MCP check does not claim that these existing tests
-have been repaired.
+The MCP workflow runs the MCP fixture suite explicitly. The whole backend suite
+runs separately in `.github/workflows/backend-tests.yml`, without a warehouse:
+tests that read real warehouse data are marked `requires_warehouse` and skip
+there. The DuckLake diagnostic, which opens the lake at import time, lives in
+`tests/inspect_lake.py` so pytest does not collect it.
 
 This release supplies data tools for report generation. It does not implement an
 agent orchestration loop, report templates, scheduled reports, a PDF renderer,

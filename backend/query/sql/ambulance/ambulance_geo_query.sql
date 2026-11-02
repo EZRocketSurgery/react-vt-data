@@ -10,7 +10,7 @@ FROM (
             'type', 'Feature',
             'geometry', ST_AsGeoJSON(
                 ST_Simplify(ST_GeomFromWKB(g.geometry), 0.0001)
-                )::JSON,
+            )::JSON,
             'properties', json_object(
                 'Certification Level', i.cert_level,
                 'Acres', ROUND(g.shape__area, 2),

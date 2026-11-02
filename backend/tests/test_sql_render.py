@@ -22,7 +22,7 @@ from query.sql_render import (
 
 BACKEND = Path(__file__).resolve().parent.parent
 QUERY_SQL = BACKEND / "query" / "sql"
-BUILD_SQL = BACKEND / "build" / "sql"
+CLEANING_SQL = BACKEND / "data_cleaning" / "sql"
 
 # ---------------------------------------------------------------------------
 # Representative render arguments per template
@@ -41,31 +41,70 @@ CTE_SOURCE = FilterSource(
     join_key="OBJECT_ID",
     join_type="inner",
 )
+PARCELS_SOURCE = FilterSource(
+    filter_table="VCGIParcels_info",
+    filters={"county": ["Addison"]},
+    join_key="object_id",
+)
+CDC_SOURCE = FilterSource(
+    filter_table="cdc_places_county",
+    filters={"measure": ["Depression among adults"]},
+)
 
 # template path (relative to backend/) -> FilterSource list for sql_filter_block
 QUERY_TEMPLATE_SOURCES = {
+    "query/sql/acs5/acs5_county_compare.sql": [WHERE_SOURCE],
+    "query/sql/acs5/acs5_dp_county_comparison.sql": [WHERE_SOURCE],
     "query/sql/acs5/acs5_tidy.sql": [WHERE_SOURCE],
-    "query/sql/acs5/median_earnings.sql": [WHERE_SOURCE],
-    "query/sql/acs5/snapshot.sql": [WHERE_SOURCE],
-    "query/sql/acs5/unemployment_rate.sql": [WHERE_SOURCE],
+    "query/sql/acs5/acs5_timeseries.sql": [WHERE_SOURCE],
+    "query/sql/acs5/acs5_town_compare.sql": [WHERE_SOURCE],
+    "query/sql/acs5/acs5_tract_compare.sql": [WHERE_SOURCE],
+    "query/sql/ambulance/ambulance_geo_query.sql": [
+        FilterSource(
+            filter_table="VCGI_ambulanceService_info",
+            filters={"cert_level": ["Advanced EMT"]},
+            join_key="object_id",
+        )
+    ],
     "query/sql/cdc/county_places.sql": [
         FilterSource(
             filter_table="cdc_places_county",
             filters={"Measure": ["Depression among adults"]},
         )
     ],
+    "query/sql/cdc/places_by_county.sql": [CDC_SOURCE],
+    "query/sql/cdc/places_tidy.sql": [CDC_SOURCE],
     "query/sql/cdc/tract_places.sql": [
         FilterSource(
             filter_table="cdc_tract_places",
             filters={"Measure": ["Depression among adults"]},
         )
     ],
+    "query/sql/flood/flood_geo_query.sql": [
+        FilterSource(
+            filter_table="FEMA_floodHazard_geom",
+            filters={"flood_zone_type": ["AE"]},
+        )
+    ],
+    "query/sql/parcels/agg_category_table.sql": [PARCELS_SOURCE],
+    "query/sql/parcels/agg_flood_table.sql": [PARCELS_SOURCE],
+    "query/sql/parcels/agg_owner_table.sql": [PARCELS_SOURCE],
+    "query/sql/parcels/agg_value_table.sql": [PARCELS_SOURCE],
+    "query/sql/parcels/category_table.sql": [PARCELS_SOURCE],
+    "query/sql/parcels/flood_table.sql": [PARCELS_SOURCE],
+    "query/sql/parcels/geo_query.sql": [PARCELS_SOURCE],
+    "query/sql/parcels/owner_table.sql": [PARCELS_SOURCE],
+    "query/sql/parcels/value_table.sql": [PARCELS_SOURCE],
+    "query/sql/zoning/agg_footprints.sql": [CTE_SOURCE],
     "query/sql/zoning/agg_info_table.sql": [CTE_SOURCE],
+    "query/sql/zoning/agg_lot_size.sql": [CTE_SOURCE],
     "query/sql/zoning/info_table.sql": [CTE_SOURCE],
     "query/sql/zoning/geo_query.sql": [CTE_SOURCE],
     "query/sql/zoning/unzoned.sql": [],
     "query/sql/zoning/agg_rules_table.sql": [CTE_SOURCE],
+    "query/sql/zoning/footprints.sql": [CTE_SOURCE],
     "query/sql/zoning/geo_rule_table.sql": [CTE_SOURCE],
+    "query/sql/zoning/lot_size_table.sql": [CTE_SOURCE],
     "query/sql/zoning/rules_table.sql": [CTE_SOURCE],
     "query/sql/zoning/rules.sql": [CTE_SOURCE],
     "query/sql/wastewater/service_area_geo_query.sql": [
@@ -93,16 +132,12 @@ QUERY_TEMPLATE_SOURCES = {
     "query/sql/wastewater/waste_treatment_permit_table.sql": [],
 }
 
-# build templates take plain string context instead of FilterSources
-BUILD_TEMPLATE_CONTEXT = {
-    "build/sql/cdc_places.sql": {
-        "indicators": "'ASTHMA', 'DIABETES'",
-        "path": "dummy.csv",
-    },
-    "build/sql/zoning_colors.sql": {},
-    "build/sql/zoning_empty_geom.sql": {"min_acres": 10},
-    "build/sql/zoning_info.sql": {"info_string": "OBJECT_ID, County"},
-    "build/sql/zoning_rules.sql": {
+# data-cleaning templates take plain string context instead of FilterSources
+CLEANING_TEMPLATE_CONTEXT = {
+    "data_cleaning/sql/zoning_colors.sql": {},
+    "data_cleaning/sql/zoning_empty_geom.sql": {"min_acres": 10},
+    "data_cleaning/sql/zoning_info.sql": {"info_string": "OBJECT_ID, County"},
+    "data_cleaning/sql/zoning_rules.sql": {
         "rule_string": 'CAST("Residential_Min_Lot" AS VARCHAR) AS residential_min_lot'
     },
 }
@@ -164,7 +199,7 @@ class TestCompileFilters:
         cte, join = compile_filters([CTE_SOURCE], params)
         assert cte == (
             "WITH f0 AS (SELECT DISTINCT OBJECT_ID "
-            'FROM zoning_info WHERE "County" IN ($1))'
+            'FROM VersoZoning_info WHERE "County" IN ($1))'
         )
         assert join == "JOIN f0 USING (OBJECT_ID)"
         assert params == ["Addison"]
@@ -230,7 +265,7 @@ class TestRendering:
         from jinja2 import UndefinedError
 
         with pytest.raises(UndefinedError):
-            render_sql(BACKEND / "build/sql/zoning_info.sql")
+            render_sql(BACKEND / "data_cleaning/sql/zoning_info.sql")
 
 
 # ---------------------------------------------------------------------------
@@ -242,16 +277,16 @@ def test_all_templates_accounted_for():
     """Every .sql file has a representative context in this test module."""
     templates = {
         str(p.relative_to(BACKEND))
-        for d in (QUERY_SQL, BUILD_SQL)
+        for d in (QUERY_SQL, CLEANING_SQL)
         for p in d.rglob("*.sql")
     }
-    assert templates == set(QUERY_TEMPLATE_SOURCES) | set(BUILD_TEMPLATE_CONTEXT)
+    assert templates == set(QUERY_TEMPLATE_SOURCES) | set(CLEANING_TEMPLATE_CONTEXT)
 
 
 def test_templates_pass_sqlfluff():
-    """Same check as `sqlfluff lint query/sql build/sql` (config in .sqlfluff)."""
+    """Same check as `sqlfluff lint query/sql data_cleaning/sql` (config in .sqlfluff)."""
     linter = Linter(config=FluffConfig.from_path(str(BACKEND)))
-    result = linter.lint_paths((str(QUERY_SQL), str(BUILD_SQL)))
+    result = linter.lint_paths((str(QUERY_SQL), str(CLEANING_SQL)))
     violations = result.get_violations()
     assert violations == [], [str(v) for v in violations]
 
@@ -264,9 +299,9 @@ def test_rendered_query_sql_parses(template):
     _assert_parses(sql, template)
 
 
-@pytest.mark.parametrize("template", sorted(BUILD_TEMPLATE_CONTEXT))
-def test_rendered_build_sql_parses(template):
-    sql = render_sql(BACKEND / template, **BUILD_TEMPLATE_CONTEXT[template])
+@pytest.mark.parametrize("template", sorted(CLEANING_TEMPLATE_CONTEXT))
+def test_rendered_cleaning_sql_parses(template):
+    sql = render_sql(BACKEND / template, **CLEANING_TEMPLATE_CONTEXT[template])
     _assert_parses(sql, template)
 
 

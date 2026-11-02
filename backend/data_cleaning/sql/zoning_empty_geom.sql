@@ -28,7 +28,7 @@ gaps AS (
         t.id,
         t.NAME,
         ST_DIFFERENCE(
-            ST_GeomFromWKB(geometry),
+            ST_GeomFromWKB(t.geometry),
             COALESCE(c.geom, ST_GEOMFROMTEXT('POLYGON EMPTY'))
         ) AS geom
     FROM town_boundaries AS t
@@ -41,7 +41,7 @@ exploded AS (
     SELECT
         g.id,
         g.NAME,
-        UNNEST(ST_DUMP(geom), recursive := true)  -- noqa: AL03
+        UNNEST(ST_DUMP(g.geom), recursive := true)  -- noqa: AL03
     FROM gaps AS g
     WHERE NOT ST_ISEMPTY(g.geom)
 ),

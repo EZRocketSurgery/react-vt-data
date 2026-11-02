@@ -1,5 +1,5 @@
-# SQL linting for the Jinja SQL templates in query/sql/ and build/sql/.
-# Run from backend/:  uv run sqlfluff lint query/sql build/sql
+# SQL linting for the Jinja SQL templates in query/sql/ and data_cleaning/sql/.
+# Run from backend/:  uv run sqlfluff lint query/sql data_cleaning/sql
 #
 # The [templater:jinja:context] section supplies representative values for the
 # fragments that Python (sql_render.py) injects at runtime, so the linter

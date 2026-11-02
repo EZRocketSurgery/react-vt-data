@@ -4,9 +4,10 @@
 **Description**:
     Jinja SQL rendering plus the general-purpose filter compiler.
 
-    SQL files under `query/sql/` and `build/sql/` are Jinja templates, so they can
-    be linted with sqlfluff (`uv run sqlfluff lint query/sql build/sql` from
-    `backend/`; lint-time template context lives in `backend/.sqlfluff`).
+    SQL files under `query/sql/` and `data_cleaning/sql/` are Jinja templates, so
+    they can be linted with sqlfluff (`uv run sqlfluff lint query/sql
+    data_cleaning/sql` from `backend/`; lint-time template context lives in
+    `backend/.sqlfluff`).
 
     Python compiles FilterSource objects into SQL fragments (filter CTEs, joins,
     and WHERE clauses) and injects them through the Jinja context. This keeps the

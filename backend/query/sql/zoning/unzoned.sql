@@ -1,6 +1,6 @@
 -- Towns' unzoned areas as a GeoJSON FeatureCollection, drawn as a grey layer
--- underneath the zoning districts. Built by build/sql/zoning_empty_geom.sql,
--- which already drops sliver-sized gaps.
+-- underneath the zoning districts. Built by
+-- data_cleaning/sql/zoning_empty_geom.sql, which already drops sliver-sized gaps.
 --
 -- This layer does not depend on the sidebar filters: it is the same "we have no
 -- data here" backdrop regardless of which districts are being shown.

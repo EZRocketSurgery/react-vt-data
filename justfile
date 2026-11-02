@@ -273,13 +273,13 @@ lint-backend:
 [group("Lint & Format")]
 [working-directory("backend")]
 lint-sql:
-    uv run sqlfluff lint query/sql build/sql
+    uv run sqlfluff lint query/sql data_cleaning/sql
 
 [doc("auto-fix the Jinja SQL templates with sqlfluff")]
 [group("Lint & Format")]
 [working-directory("backend")]
 fix-sql:
-    uv run sqlfluff fix query/sql build/sql
+    uv run sqlfluff fix query/sql data_cleaning/sql
 
 [doc("run the backend test suite")]
 [group("Test")]
