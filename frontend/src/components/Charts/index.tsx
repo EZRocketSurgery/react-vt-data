@@ -5,6 +5,7 @@ export {
   CompareDiffPerXBarChart,
   CompareHBarChart,
   ZoningAllowanceStackedBarChart,
+  RankedBarChart,
 } from './Bar';
 
 export {
