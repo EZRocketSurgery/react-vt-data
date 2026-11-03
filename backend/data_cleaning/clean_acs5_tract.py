@@ -5,17 +5,18 @@
 
     Each indicator is a share (count / universe) with a 90% margin of error,
     derived with the Census Bureau's formulas for sums (root sum of squared
-    MOEs) and proportions. Census sentinels (negative estimates) and any
+    MOEs, counting only the largest among zero estimates) and proportions. Census sentinels (negative estimates) and any
     missing component make the indicator NULL instead of a partial sum.
 
     Writes lake.CLEANED.acs5_tract_tidy: year, geoid, county_fips, county,
     name, geo_type, section, variable, value (count), universe, percent,
-    percent_moe.
+    percent_moe, percent_reliability (see data_cleaning/margins.py).
 """
 
 import duckdb
 
 from data_cleaning.geo_lookup import build_geo_lookups, write_table
+from data_cleaning.margins import reliability_sql
 
 TABLE_NAME = "acs5_tract_tidy"
 
@@ -64,6 +65,17 @@ def _in_list(codes: list[str]) -> str:
     return ", ".join(f"'{c}'" for c in codes)
 
 
+def _sum_moe(codes: list[str]) -> str:
+    """Margin of error of the sum of `codes`: root sum of squares, counting
+    only the largest margin among zero estimates, whose margins are modeled
+    (Census guidance; matches data_collection/base.py)."""
+    codes = _in_list(codes)
+    return f"""SQRT(
+        COALESCE(SUM(moe * moe) FILTER (WHERE code IN ({codes}) AND est <> 0), 0)
+        + COALESCE(MAX(moe * moe) FILTER (WHERE code IN ({codes}) AND est = 0), 0)
+    )"""
+
+
 def indicator_sql(section: str, variable: str, num: list[str], den: list[str]) -> str:
     """One row per tract and year for a single count / universe indicator."""
     return f"""--sql
@@ -74,13 +86,11 @@ def indicator_sql(section: str, variable: str, num: list[str], den: list[str]) -
             SUM(est) FILTER (WHERE code IN ({_in_list(num)})) AS num,
             COUNT(est) FILTER (WHERE code IN ({_in_list(num)})) = {len(num)}
                 AS num_ok,
-            SQRT(SUM(moe * moe) FILTER (WHERE code IN ({_in_list(num)})))
-                AS num_moe,
+            {_sum_moe(num)} AS num_moe,
             SUM(est) FILTER (WHERE code IN ({_in_list(den)})) AS den,
             COUNT(est) FILTER (WHERE code IN ({_in_list(den)})) = {len(den)}
                 AS den_ok,
-            SQRT(SUM(moe * moe) FILTER (WHERE code IN ({_in_list(den)})))
-                AS den_moe,
+            {_sum_moe(den)} AS den_moe,
             COUNT(moe) FILTER (WHERE code IN ({_in_list(num + den)}))
                 = {len(set(num + den))} AS moe_ok
         FROM raw
@@ -96,11 +106,12 @@ def tract_sql() -> str:
             SELECT
                 year, NAME, state, county, tract, code,
                 CASE WHEN estimate >= 0 THEN estimate END AS est,
-                -- -555555555 / -222222222: the estimate is controlled, so its
-                -- margin of error is zero; other negative codes are missing.
+                -- -555555555: the estimate is controlled, so its margin of
+                -- error is zero. Other negative codes are missing, e.g.
+                -- -222222222: too few sample cases to compute a margin.
                 CASE
                     WHEN moe >= 0 THEN moe
-                    WHEN moe IN (-555555555, -222222222) THEN 0
+                    WHEN moe = -555555555 THEN 0
                 END AS moe
             FROM lake.RAW.acs5_tract
         ),
@@ -131,11 +142,12 @@ def tract_sql() -> str:
             CASE WHEN r.den_ok THEN r.den END AS universe,
             ROUND(100 * r.p, 1) AS percent,
             -- Census proportion MOE; the + form when the difference goes
-            -- negative, per the ACS handbook.
+            -- negative, per the ACS handbook, or is zero (a 100% share,
+            -- which would otherwise claim no sampling error).
             CASE WHEN r.p IS NOT NULL AND r.moe_ok THEN ROUND(
                 100 * SQRT(
                     CASE
-                        WHEN r.num_moe ^ 2 >= r.p ^ 2 * r.den_moe ^ 2
+                        WHEN r.num_moe ^ 2 > r.p ^ 2 * r.den_moe ^ 2
                             THEN r.num_moe ^ 2 - r.p ^ 2 * r.den_moe ^ 2
                         ELSE r.num_moe ^ 2 + r.p ^ 2 * r.den_moe ^ 2
                     END
@@ -148,6 +160,16 @@ def tract_sql() -> str:
     """
 
 
+def reliable_tract_sql() -> str:
+    """:func:`tract_sql` with a reliability label for each percent."""
+    return f"""--sql
+        SELECT
+            *,
+            {reliability_sql("percent", "percent_moe")} AS percent_reliability
+        FROM ({tract_sql()})
+    """
+
+
 def main(con: duckdb.DuckDBPyConnection):
     build_geo_lookups(con)
-    write_table(con, TABLE_NAME, tract_sql())
+    write_table(con, TABLE_NAME, reliable_tract_sql())

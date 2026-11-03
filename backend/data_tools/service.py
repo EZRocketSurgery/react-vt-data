@@ -389,15 +389,22 @@ class DataToolService:
             raise DataToolError(
                 f"Unsupported measures. Allowed: {', '.join(ds.value_columns)}"
             )
+        margins = set(catalog.with_margins(ds, selected_columns)) - set(
+            selected_columns
+        )
         if (
             request.measures
             and selected_columns
-            and set(request.measures) != set(selected_columns)
+            and set(request.measures) - margins != set(selected_columns)
         ):
             raise DataToolError(
                 "measures must match the selected wide-column variable IDs"
             )
-        return " AND ".join(clauses) or "TRUE", params, list(dict.fromkeys(measures))
+        return (
+            " AND ".join(clauses) or "TRUE",
+            params,
+            catalog.with_margins(ds, measures),
+        )
 
     def _query(self, conn, request, tool, version):
         ds = catalog.get_dataset(request.dataset_id)

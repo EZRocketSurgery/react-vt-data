@@ -139,7 +139,12 @@ def test_variable_search_deduplicates_years_and_roundtrips(warehouse):
         "section": "Age/Sex",
         "variable": "Population (ACS)",
     }
-    assert rows[0]["value_columns"] == {"value": "people", "percent": "percent"}
+    assert rows[0]["value_columns"] == {
+        "value": "people",
+        "value_moe": "people",
+        "percent": "percent",
+        "percent_moe": "percentage points",
+    }
     dataset = get_dataset("acs5_demographics")
     assert decode_variable_id(dataset, rows[0]["variable_id"]) == rows[0]["selectors"]
     assert (
@@ -153,9 +158,13 @@ def test_variable_search_deduplicates_years_and_roundtrips(warehouse):
 
 
 def test_wide_metric_variable_id_and_units(warehouse):
-    row = search_variables(warehouse, "acs5_ts_median_age")[0]
+    # The margin is not a variable of its own: it comes back with the estimate.
+    [row] = search_variables(warehouse, "acs5_ts_median_age")
     assert row["selectors"] == {"$column": "median_age"}
-    assert row["measures"] == [{"name": "median_age", "unit": "years"}]
+    assert row["measures"] == [
+        {"name": "median_age", "unit": "years"},
+        {"name": "median_age_moe", "unit": "years"},
+    ]
     assert decode_variable_id(
         get_dataset("acs5_ts_median_age"), row["variable_id"]
     ) == {"$column": "median_age"}
@@ -309,7 +318,8 @@ def test_missing_dataset_and_unknown_geography_fail_clearly(warehouse):
 def test_units_preserve_percentages_and_source_specific_estimates():
     dataset = get_dataset("acs5_dp")
     assert variable_units(dataset, {"measure": "Percent Estimate"}) == {
-        "value": "percent"
+        "value": "percent",
+        "moe": "percentage points",
     }
     assert "source-defined" in variable_units(dataset, {"measure": "Estimate"})["value"]
     assert get_dataset("zoning_bylaws").value_columns["f1f_min_lot_size"] == "acres"
@@ -318,11 +328,18 @@ def test_units_preserve_percentages_and_source_specific_estimates():
     economics = get_dataset("acs5_economics")
     assert variable_units(
         economics, {"variable": "Labor Force Participation Rate (16+)"}
-    ) == {"value": "people", "percent": "percent"}
+    ) == {
+        "value": "people",
+        "value_moe": "people",
+        "percent": "percent",
+        "percent_moe": "percentage points",
+    }
     housing = get_dataset("acs5_housing")
     assert variable_units(housing, {"variable": "Rental Vacancy Rate"}) == {
         "value": "housing units",
+        "value_moe": "housing units",
         "percent": "percent",
+        "percent_moe": "percentage points",
     }
     assert (
         "unavailable"

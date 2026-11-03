@@ -9,7 +9,10 @@
     `snapshot` table that combines a few key indicators from them.
 
     Each output is in tidy format: year, geoid, name, geo_type, county, county_fips,
-    section, variable, value, percent.
+    section, variable, value, value_moe, value_reliability, percent,
+    percent_moe, percent_reliability. The *_moe columns are 90% margins of
+    error (percent_moe in percentage points), computed at collection (see
+    data_collection/base.py); *_reliability labels them (see margins.py).
 **Run with**:
 python run_data_cleaning.py clean_acs5_tidy
 """
@@ -17,6 +20,7 @@ python run_data_cleaning.py clean_acs5_tidy
 import duckdb
 
 from data_cleaning.geo_lookup import acs_geo_sql, build_geo_lookups, write_table
+from data_cleaning.margins import reliability_sql
 
 # RAW table name -> CLEANED table name
 TIDY_TABLES = {
@@ -57,7 +61,20 @@ def tidy_sql(base: str) -> str:
             section AS section,
             variable AS variable,
             value AS value,
-            percent AS percent
+            value_moe AS value_moe,
+            {reliability_sql("value", "value_moe")} AS value_reliability,
+            percent AS percent,
+            percent_moe AS percent_moe,
+            -- Collection rounds percent_moe to 0.1 point, so a small share's
+            -- real margin can round to 0, which reliability_sql reads as a
+            -- controlled estimate. Unless the count is controlled too, label
+            -- the share by its count: exact when the total is controlled, and
+            -- otherwise never rosier than the share's own label.
+            CASE
+                WHEN percent_moe = 0 AND value_moe > 0
+                    THEN {reliability_sql("value", "value_moe")}
+                ELSE {reliability_sql("percent", "percent_moe")}
+            END AS percent_reliability
         FROM ({acs_geo_sql(base)})
         """
 

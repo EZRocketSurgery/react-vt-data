@@ -110,6 +110,58 @@ def test_uninsured_split_by_poverty_is_a_crosstab(lake):
     assert len(uninsured(BELOW_138 + AT_OR_ABOVE_138)) == 15
 
 
+def test_controlled_margin_counts_as_zero(lake):
+    # -555555555: the universe is controlled, so it has no sampling error.
+    df = _clean(lake, {"B17001_001": (1000, -555555555), "B17001_002": (150, 50)})
+    row = df[df.variable == "Below poverty level"].iloc[0]
+
+    assert row.percent_moe == round(100 * 50 / 1000, 1)
+
+
+def test_uncomputable_margin_makes_the_margin_null(lake):
+    # -222222222: too few sample cases to compute a margin. The estimate
+    # stands, but its margin is unknown, not zero.
+    df = _clean(lake, {"B17001_001": (1000, 100), "B17001_002": (0, -222222222)})
+    row = df[df.variable == "Below poverty level"].iloc[0]
+
+    assert row.percent == 0.0
+    assert pd.isna(row.percent_moe)
+
+
+def test_zero_estimates_count_only_their_largest_margin(lake):
+    # Of the 15 uninsured codes, 5 are 8 and 10 are zero. One zero code has a
+    # margin of 25 and the rest 10, so the sum's margin is
+    # sqrt(10^2 * 5 + 25^2): every nonzero margin, plus the largest zero one.
+    estimates = _c27016_fixture(uninsured_count=8)
+    zero = next(c for c in uninsured(BELOW_138) if estimates[c][0] == 0)
+    estimates[zero] = (0, 25)
+    df = _clean(lake, estimates).set_index("variable")
+    num_moe = math.sqrt(10**2 * 5 + 25**2)
+    p = 40 / 500
+    expected = 100 * math.sqrt(num_moe**2 - p**2 * 40**2) / 500
+    assert df.loc["No health insurance", "percent_moe"] == round(expected, 1)
+
+
+def test_full_share_margin_is_not_zero(lake):
+    df = _clean(lake, {"B17001_001": (40, 12), "B17001_002": (40, 12)})
+    row = df[df.variable == "Below poverty level"].iloc[0]
+
+    assert row.percent == 100.0
+    assert row.percent_moe == round(100 * math.sqrt(12**2 + 12**2) / 40, 1)
+
+
+def test_percent_reliability_follows_the_coefficient_of_variation(lake):
+    # CV = (MOE / 1.645) / estimate: 1.2 / 1.645 / 15 = 5% -> high
+    high = _clean(lake, {"B17001_001": (10000, 100), "B17001_002": (1500, 120)})
+    # 4.8 / 1.645 / 15 = 19% -> medium; 9.5 / 1.645 / 15 = 39% -> low
+    medium = _clean(lake, {"B17001_001": (1000, 100), "B17001_002": (150, 50)})
+    low = _clean(lake, {"B17001_001": (200, 40), "B17001_002": (30, 20)})
+
+    assert high.percent_reliability.iloc[0] == "high"
+    assert medium.percent_reliability.iloc[0] == "medium"
+    assert low.percent_reliability.iloc[0] == "low"
+
+
 def test_suppressed_component_makes_the_indicator_null(lake):
     df = _clean(
         lake, {"B17001_001": (1000, 100), "B17001_002": (-666666666, -222222222)}

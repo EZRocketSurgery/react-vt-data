@@ -25,11 +25,19 @@ from dataclasses import dataclass
 
 import duckdb
 
+from data_cleaning.clean_acs5 import published_moe_sql
 from data_cleaning.geo_lookup import (
     UNAVAILABLE,
     acs_geo_sql,
     build_geo_lookups,
     write_table,
+)
+from data_cleaning.margins import (
+    proportion_moe_sql,
+    ratio_moe_sql,
+    reliability_sql,
+    sum_moe_agg_sql,
+    sum_moe_sql,
 )
 
 # Raw identifier columns every base query must expose (see `acs_geo_sql`)
@@ -99,12 +107,33 @@ def in_list(values: list[str]) -> str:
     return ", ".join(f"'{v}'" for v in values)
 
 
+def with_moe(column: str) -> tuple[str, str, str]:
+    """A measure column with its margin of error and reliability columns."""
+    return (column, f"{column}_moe", f"{column}_reliability")
+
+
+def published_value_moe() -> str:
+    """
+    SELECT columns for a raw DP row's published margin of `Value`, as
+    `Value_MOE` and `Value_Reliability`.
+    """
+    moe = published_moe_sql("MOE")
+    return (
+        f'{moe} AS "Value_MOE", '
+        f'{reliability_sql(numeric("Value"), moe)} AS "Value_Reliability"'
+    )
+
+
+VALUE_WITH_MOE = ("Value", "Value_MOE", "Value_Reliability")
+
+
 def single_variable(
     source: str,
     variables: list[str],
     out_col: str,
     value_col: str = "Value",
     keep_variable: bool = False,
+    moe_col: str | None = None,
 ) -> str:
     """
     Filters a RAW lake table to Key, variable (if true), and value columns
@@ -115,6 +144,9 @@ def single_variable(
         out_col:
         value_col: Column name containing the tracked value over time.
         keep_variable: (T/F) if you want to keep the variable column. Best for timeseries tables tracking multiple variables.
+        moe_col: Column holding value_col's 90% margin of error, written as
+            `{out_col}_moe` with its `{out_col}_reliability` label (see
+            :func:`with_moe`). None leaves both out.
 
     Returns:
         str: A SQL query which filters the source table to contain the time series variable(s)
@@ -122,8 +154,15 @@ def single_variable(
 
     """
     variable = ", Variable" if keep_variable else ""
+    moe = (
+        f", {numeric(moe_col)} AS {out_col}_moe, "
+        f"{reliability_sql(numeric(value_col), numeric(moe_col))} "
+        f"AS {out_col}_reliability"
+        if moe_col
+        else ""
+    )
     return f"""--sql
-        SELECT {KEYS}{variable}, {numeric(value_col)} AS {out_col}
+        SELECT {KEYS}{variable}, {numeric(value_col)} AS {out_col}{moe}
         FROM lake.RAW.{source}
         WHERE Variable IN ({in_list(variables)})
         """
@@ -167,45 +206,65 @@ def population_change_sql() -> str:
 
 def age_dependency_ratio_sql() -> str:
     """
-    SQL calculating age dependency ratio: (`Under 18` + `65 and over`) / (`18 to 64`) * 100.
+    SQL calculating age dependency ratio: (`Under 18` + `65 and over`) / (`18 to 64`) * 100,
+    with its 90% margin of error and reliability label.
+
+    The dependents and the working-age population don't overlap, so the margin
+    takes the ratio form, from the two sums' margins.
 
     Returns:
         str: A SQL query that creates the age dependency ratio table
     """
-    ages = [
-        "Under 18",
-        "18 to 24",
-        "25 to 34",
-        "35 to 44",
-        "45 to 54",
-        "55 to 64",
-        "65 to 74",
-        "75 Plus",
-    ]
+    dependents = ["Under 18", "65 to 74", "75 Plus"]
+    working = ["18 to 24", "25 to 34", "35 to 44", "45 to 54", "55 to 64"]
+    ages = dependents + working
     wide = ",\n".join(
-        f"MAX(CASE WHEN Variable = '{a}' THEN v END) AS \"{a}\"" for a in ages
+        f"MAX(CASE WHEN Variable = '{a}' THEN {col} END) AS \"{a}{suffix}\""
+        for a in ages
+        for col, suffix in [("v", ""), ("m", " MOE")]
     )
-    working = " + ".join(f'"{a}"' for a in ages[1:6])
+
+    def total(group: list[str]) -> str:
+        return " + ".join(f'"{a}"' for a in group)
+
+    def total_moe(group: list[str]) -> str:
+        return sum_moe_sql([(f'"{a}"', f'"{a} MOE"') for a in group])
 
     return f"""--sql
         SELECT
             {KEYS},
-            ROUND(
-                CASE
-                    WHEN ({working}) > 0
-                        THEN ("Under 18" + "65 to 74" + "75 Plus")
-                            / ({working}) * 100
-                END,
-                1
-            ) AS age_dependency_ratio
+            age_dependency_ratio,
+            age_dependency_ratio_moe,
+            {reliability_sql("age_dependency_ratio", "age_dependency_ratio_moe")}
+                AS age_dependency_ratio_reliability
         FROM (
-            SELECT {KEYS}, {wide}
+            SELECT
+                {KEYS},
+                ROUND(100 * ratio, 1) AS age_dependency_ratio,
+                ROUND(
+                    100 * {ratio_moe_sql("ratio", "num_moe", "den", "den_moe")}, 1
+                ) AS age_dependency_ratio_moe
             FROM (
-                SELECT {KEYS}, Variable, {numeric("Value")} AS v
-                FROM lake.RAW.demographics
-                WHERE Variable IN ({in_list(ages)})
+                SELECT
+                    {KEYS},
+                    ({total(dependents)}) / NULLIF({total(working)}, 0) AS ratio,
+                    {total_moe(dependents)} AS num_moe,
+                    NULLIF({total(working)}, 0) AS den,
+                    {total_moe(working)} AS den_moe
+                FROM (
+                    SELECT {KEYS}, {wide}
+                    FROM (
+                        SELECT
+                            {KEYS},
+                            Variable,
+                            {numeric("Value")} AS v,
+                            {numeric("Value_MOE")} AS m
+                        FROM lake.RAW.demographics
+                        WHERE Variable IN ({in_list(ages)})
+                    )
+                    GROUP BY {KEYS}
+                )
             )
-            GROUP BY {KEYS}
         )
         """
 
@@ -228,6 +287,9 @@ def housing_cost_burden_sql(source: str = "lake.RAW.acs5_housing") -> str:
     households" is NULL unless all three tenures are complete. Percent is NULL
     when the universe is 0 (no households of that tenure).
 
+    Summed counts take the root sum of their published margins, and Percent
+    the proportion form, since burdened households are a subset of Total.
+
     Starts in 2013: earlier DP04 layouts differ, and 2010-2012 do not separate
     owners with and without a mortgage.
 
@@ -236,12 +298,15 @@ def housing_cost_burden_sql(source: str = "lake.RAW.acs5_housing") -> str:
 
     Returns:
         str: SELECT of KEYS, Variable, Value (burdened households),
-            Total (universe), and Percent.
+            Total (universe), and Percent, each with its 90% margin of error
+            (`_MOE`) and reliability label (`_Reliability`).
     """
     tenure_cases = "\n".join(
         f"WHEN '{subcategory}' THEN '{label}'"
         for subcategory, label in BURDEN_TENURES.items()
     )
+    brackets = "Variable <> 'Total'"
+    percent_moe = proportion_moe_sql("p", '"Value_MOE"', "Total", "Total_MOE")
     return f"""--sql
         WITH src AS (
             SELECT
@@ -251,7 +316,8 @@ def housing_cost_burden_sql(source: str = "lake.RAW.acs5_housing") -> str:
                 CASE
                     WHEN TRY_CAST(Value AS DOUBLE) >= 0
                         THEN TRY_CAST(Value AS DOUBLE)
-                END AS v
+                END AS v,
+                {published_moe_sql("MOE")} AS m
             FROM {source}
             WHERE year >= {BURDEN_FIRST_YEAR}
                 AND Measure = 'Estimate'
@@ -263,10 +329,12 @@ def housing_cost_burden_sql(source: str = "lake.RAW.acs5_housing") -> str:
             SELECT
                 {KEYS},
                 tenure,
-                SUM(v) FILTER (WHERE Variable <> 'Total') AS burdened,
-                COUNT(v) FILTER (WHERE Variable <> 'Total') AS n_brackets,
-                COUNT(*) FILTER (WHERE Variable <> 'Total') AS n_bracket_rows,
+                SUM(v) FILTER (WHERE {brackets}) AS burdened,
+                {sum_moe_agg_sql("v", "m", brackets)} AS burdened_moe,
+                COUNT(v) FILTER (WHERE {brackets}) AS n_brackets,
+                COUNT(*) FILTER (WHERE {brackets}) AS n_bracket_rows,
                 MAX(v) FILTER (WHERE Variable = 'Total') AS total,
+                MAX(m) FILTER (WHERE Variable = 'Total') AS total_moe,
                 COUNT(v) FILTER (WHERE Variable = 'Total') AS n_totals,
                 COUNT(*) FILTER (WHERE Variable = 'Total') AS n_total_rows
             FROM src
@@ -280,7 +348,13 @@ def housing_cost_burden_sql(source: str = "lake.RAW.acs5_housing") -> str:
                 CASE
                     WHEN n_brackets = 2 AND n_bracket_rows = 2 THEN burdened
                 END AS "Value",
-                CASE WHEN n_totals = 1 AND n_total_rows = 1 THEN total END AS Total
+                CASE
+                    WHEN n_brackets = 2 AND n_bracket_rows = 2 THEN burdened_moe
+                END AS "Value_MOE",
+                CASE WHEN n_totals = 1 AND n_total_rows = 1 THEN total END AS Total,
+                CASE
+                    WHEN n_totals = 1 AND n_total_rows = 1 THEN total_moe
+                END AS Total_MOE
             FROM by_tenure
         ),
 
@@ -289,26 +363,43 @@ def housing_cost_burden_sql(source: str = "lake.RAW.acs5_housing") -> str:
                 {KEYS},
                 '{BURDEN_ALL_HOUSEHOLDS}' AS Variable,
                 CASE WHEN COUNT("Value") = 3 THEN SUM("Value") END AS "Value",
-                CASE WHEN COUNT(Total) = 3 THEN SUM(Total) END AS Total
+                CASE
+                    WHEN COUNT("Value") = 3
+                        THEN {sum_moe_agg_sql('"Value"', '"Value_MOE"')}
+                END AS "Value_MOE",
+                CASE WHEN COUNT(Total) = 3 THEN SUM(Total) END AS Total,
+                CASE
+                    WHEN COUNT(Total) = 3 THEN {sum_moe_agg_sql("Total", "Total_MOE")}
+                END AS Total_MOE
             FROM tenure_rows
             GROUP BY {KEYS}
         ),
 
         combined AS (
-            SELECT * FROM tenure_rows
-            UNION ALL
-            SELECT * FROM all_rows
+            SELECT
+                *,
+                CASE WHEN "Value" IS NOT NULL AND Total > 0 THEN "Value" / Total END AS p
+            FROM (
+                SELECT * FROM tenure_rows
+                UNION ALL
+                SELECT * FROM all_rows
+            )
         )
 
+        -- Reliability comes from the unrounded figures: a small share's
+        -- margin can round to 0.0, which would read as a controlled estimate.
         SELECT
             {KEYS},
             Variable,
             "Value",
+            ROUND("Value_MOE") AS "Value_MOE",
+            {reliability_sql('"Value"', '"Value_MOE"')} AS "Value_Reliability",
             Total,
-            CASE
-                WHEN "Value" IS NOT NULL AND Total > 0
-                    THEN ROUND(100 * "Value" / Total, 1)
-            END AS Percent
+            ROUND(Total_MOE) AS Total_MOE,
+            {reliability_sql("Total", "Total_MOE")} AS Total_Reliability,
+            ROUND(100 * p, 1) AS Percent,
+            ROUND(100 * {percent_moe}, 1) AS Percent_MOE,
+            {reliability_sql("p", percent_moe)} AS Percent_Reliability
         FROM combined
         """
 
@@ -318,34 +409,48 @@ CONFIGS: dict[str, TimeSeries] = {
     # Median age
     "median_age": TimeSeries(
         table="acs5Demographics_medianAge_timeseries",
-        base=single_variable("demographics", ["Median Age"], "median_age"),
-        columns=("median_age",),
+        base=single_variable(
+            "demographics", ["Median Age"], "median_age", moe_col="Value_MOE"
+        ),
+        columns=with_moe("median_age"),
     ),
     # Median Household Income
     "median_hh_income": TimeSeries(
         table="acs5Economics_medianHouseholdIncome_timeseries",
         base=single_variable(
-            "economic", ["Median Household Income"], "median_household_income"
+            "economic",
+            ["Median Household Income"],
+            "median_household_income",
+            moe_col="Value_MOE",
         ),
-        columns=("median_household_income",),
+        columns=with_moe("median_household_income"),
     ),
     # Median Home Value
     "median_home_value": TimeSeries(
         table="acs5Housing_medianHomeValue_timeseries",
-        base=single_variable("housing", ["Median Home Value"], "median_home_value"),
-        columns=("median_home_value",),
+        base=single_variable(
+            "housing", ["Median Home Value"], "median_home_value", moe_col="Value_MOE"
+        ),
+        columns=with_moe("median_home_value"),
     ),
     # Per Capita Income
     "per_capita_income": TimeSeries(
         table="acs5Economics_perCapitaIncome_timeseries",
-        base=single_variable("economic", ["Per Capita Income"], "per_capita_income"),
-        columns=("per_capita_income",),
+        base=single_variable(
+            "economic", ["Per Capita Income"], "per_capita_income", moe_col="Value_MOE"
+        ),
+        columns=with_moe("per_capita_income"),
     ),
     # Total Housing Units
     "total_housing_units": TimeSeries(
         table="acs5Housing_housingUnits_timeseries",
-        base=single_variable("housing", ["Total Housing Units"], "total_housing_units"),
-        columns=("total_housing_units",),
+        base=single_variable(
+            "housing",
+            ["Total Housing Units"],
+            "total_housing_units",
+            moe_col="Value_MOE",
+        ),
+        columns=with_moe("total_housing_units"),
     ),
     # Vacancy Rates
     "vacancy_rate": TimeSeries(
@@ -356,8 +461,9 @@ CONFIGS: dict[str, TimeSeries] = {
             "percent",
             value_col="Percent",
             keep_variable=True,
+            moe_col="Percent_MOE",
         ),
-        columns=("Variable", "percent"),
+        columns=("Variable", *with_moe("percent")),
     ),
     # Population Change (%)
     "population_change": TimeSeries(
@@ -369,13 +475,14 @@ CONFIGS: dict[str, TimeSeries] = {
     "age_dependency_ratio": TimeSeries(
         table="acs5Demographics_ageDependencyRatio_timeseries",
         base=age_dependency_ratio_sql(),
-        columns=("age_dependency_ratio",),
+        columns=with_moe("age_dependency_ratio"),
     ),
     # Health Insurance Coverage (Public, Private, None)
     "health_insurance": TimeSeries(
         table="acs5Economics_healthInsurance_timeseries",
         base=f"""--sql
-            SELECT {KEYS}, Variable, {numeric("Value")} AS "Value"
+            SELECT {KEYS}, Variable, {numeric("Value")} AS "Value",
+                {published_value_moe()}
             FROM lake.RAW.acs5_economic
             WHERE Category LIKE '%INSURANCE%'
                 AND Subcategory = 'Civilian noninstitutionalized population'
@@ -386,14 +493,15 @@ CONFIGS: dict[str, TimeSeries] = {
                 )
                 AND Measure = 'Estimate'
             """,
-        columns=("Variable", "Value"),
+        columns=("Variable", *VALUE_WITH_MOE),
         with_county=False,
     ),
     # Median Earnings (Male, Female, All Workers)
     "median_earnings": TimeSeries(
         table="acs5Economics_medianEarnings_timeseries",
         base=f"""--sql
-            SELECT {KEYS}, Subcategory AS Variable, {numeric("Value")} AS "Value"
+            SELECT {KEYS}, Subcategory AS Variable, {numeric("Value")} AS "Value",
+                {published_value_moe()}
             FROM lake.RAW.acs5_economic
             WHERE Category LIKE '%INCOME AND BENEFITS%'
                 AND Subcategory IN (
@@ -404,14 +512,23 @@ CONFIGS: dict[str, TimeSeries] = {
                 AND Variable = 'Total'
                 AND Measure = 'Estimate'
             """,
-        columns=("Variable", "Value"),
+        columns=("Variable", *VALUE_WITH_MOE),
         with_county=False,
     ),
     # Housing Cost Burden (30%+ of income on housing), by tenure
     "housing_cost_burden": TimeSeries(
         table="acs5Housing_incomeBurden_timeseries",
         base=housing_cost_burden_sql(),
-        columns=("Variable", "Value", "Total", "Percent"),
+        columns=(
+            "Variable",
+            *VALUE_WITH_MOE,
+            "Total",
+            "Total_MOE",
+            "Total_Reliability",
+            "Percent",
+            "Percent_MOE",
+            "Percent_Reliability",
+        ),
         with_county=False,
     ),
 }
