@@ -2,7 +2,8 @@
 Fetch ACS 5-Year Data Profile tables (DP02-DP05) for Vermont
 Geographies: counties + county subdivisions + Vermont statewide + United States
 Years: 2009 - Latest published data
-Output: one wide table and tidy table
+Output: one wide table and tidy table. Each tidy row carries its published
+90% margin of error as MOE (the M code for an estimate, PM for a percent).
 
 Geography selection
 -------------------

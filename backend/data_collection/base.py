@@ -1,5 +1,12 @@
 """
 Shared utilities for ACS 5-Year Census B-table scrapers.
+
+Census annotation values (negative sentinels such as -666666666) are missing
+data, so a row with any missing component is null rather than a partial sum.
+
+Each tidy row carries its 90% margin of error: Value_MOE for Value and
+Percent_MOE (in percentage points) for Percent, derived from the published
+margins with the Census Bureau's approximations for sums and proportions.
 """
 
 import logging
@@ -8,6 +15,7 @@ import time
 from dataclasses import dataclass
 from datetime import datetime
 
+import numpy as np
 import pandas as pd
 import requests
 
@@ -22,6 +30,10 @@ API_KEY = os.environ.get("CENSUS_API_KEY")
 BASE_URL = "https://api.census.gov/data/{year}/acs/acs5"
 STATE_FIPS = "50"
 STORAGE_LOCATION = "Data/Census/ACS_5"
+
+# The one negative margin of error that is not missing: the estimate is
+# controlled to an independent count, so it has no sampling error.
+CONTROLLED_MOE = -555555555
 
 # ---------------------------------------------------------------------------
 # Geography registry
@@ -67,11 +79,24 @@ class VarGroup:
 # ---------------------------------------------------------------------------
 
 
+def moe_code(code: str) -> str:
+    """The margin-of-error variable for an estimate: B19013_001E -> B19013_001M."""
+    return code[:-1] + "M"
+
+
 def fetch(
-    year: int, variables: list[str], for_clause: str, in_clause: str
+    year: int, table: str, codes: list[str], for_clause: str, in_clause: str
 ) -> pd.DataFrame | None:
+    """
+    Estimates and margins of error for `codes` from one table at one geography.
+
+    group() returns every estimate and margin in the table, which keeps
+    within the API's 50-variable limit (B01001 alone needs 49 estimates).
+    Codes the year doesn't publish come back as all-NaN columns.
+    """
     params = {
-        "get": ",".join(variables) + ",NAME",
+        # group() already includes NAME and GEO_ID.
+        "get": f"group({table})",
         "for": for_clause,
         "key": API_KEY,
     }
@@ -83,18 +108,25 @@ def fetch(
         params["in"] = in_clause
 
     try:
-        r = requests.get(BASE_URL.format(year=year), params=params, timeout=30)
+        r = requests.get(BASE_URL.format(year=year), params=params, timeout=60)
         r.raise_for_status()
         data = r.json()
         df = pd.DataFrame(data[1:], columns=data[0])
-        df["year"] = year
-        for c in df.columns:
-            if c[0] == "B":
-                df[c] = pd.to_numeric(df[c], errors="coerce")
-        return df
+        df = df.loc[:, ~df.columns.duplicated()]
     except Exception as e:  # noqa: BLE001 -- skip and keep the run going
-        logger.warning("SKIP %s / %s: %s", year, for_clause, e)
+        logger.warning("SKIP %s / %s / %s: %s", year, table, for_clause, e)
         return None
+
+    variables = [v for code in codes for v in (code, moe_code(code))]
+    if missing := [v for v in variables if v not in df.columns]:
+        logger.warning("%s / %s: no %s", year, table, ", ".join(missing))
+    # Geography columns (NAME, state, county, ...), without GEO_ID or the
+    # table's annotation columns.
+    ids = [c for c in df.columns if not c.startswith(f"{table}_") and c != "GEO_ID"]
+    df = df.reindex(columns=ids + variables)
+    df[variables] = df[variables].apply(pd.to_numeric, errors="coerce")
+    df["year"] = year
+    return df
 
 
 # ---------------------------------------------------------------------------
@@ -115,6 +147,52 @@ def pct(val: float, total: float) -> float | None:
     return None
 
 
+def estimates(df: pd.DataFrame, codes: list[str]) -> pd.DataFrame:
+    """Estimates for `codes`: NaN where absent or a Census annotation value
+    (https://www.census.gov/data/developers/data-sets/acs-1year/notes-on-acs-estimate-and-annotation-values.html).
+    No real estimate is negative."""
+    est = df.reindex(columns=codes)
+    return est.where(est >= 0)
+
+
+def margins(df: pd.DataFrame, codes: list[str]) -> pd.DataFrame:
+    """Margins of error for the estimates `codes`: NaN where absent or not
+    computable (e.g. -222222222, too few sample cases), 0 where controlled."""
+    moe = df.reindex(columns=[moe_code(c) for c in codes])
+    return moe.mask(moe == CONTROLLED_MOE, 0).where(lambda m: m >= 0)
+
+
+def proportion_moe(
+    p: pd.Series, num_moe: pd.Series, den: pd.Series, den_moe: pd.Series
+) -> pd.Series:
+    """
+    Margin of error of the proportion p = num / den, where num is a subset of
+    den: sqrt(num_moe^2 - p^2 * den_moe^2) / den, or the ratio form (+) when
+    the term under the root is negative, per the ACS handbook.
+
+    The ratio form also covers a zero term, which happens when num = den
+    (a 100% share): the proportion form would then claim no sampling error
+    at all, even for a town of 50 people.
+    """
+    under = num_moe**2 - p**2 * den_moe**2
+    under = under.where(under > 0, num_moe**2 + p**2 * den_moe**2)
+    return np.sqrt(under) / den
+
+
+def sum_moe(est: pd.DataFrame, moe: pd.DataFrame) -> pd.Series:
+    """
+    Margin of error of a sum of estimates: the root sum of squared margins,
+    counting only the largest margin among zero estimates. A zero estimate's
+    margin is modeled, and summing many of them overstates the error (Census
+    guidance, e.g. the 2017-2021 Variance Replicate Tables documentation).
+    """
+    sq = moe.to_numpy() ** 2
+    zero = est.to_numpy() == 0
+    nonzero_sq = np.where(zero, 0, sq).sum(axis=1)
+    zero_sq = np.where(zero, sq, 0).max(axis=1, initial=0)
+    return pd.Series(np.sqrt(nonzero_sq + zero_sq), index=est.index)
+
+
 def compute_tidy_generic(df: pd.DataFrame, var_groups: list[VarGroup]) -> pd.DataFrame:
     base = pd.DataFrame(
         {
@@ -126,21 +204,36 @@ def compute_tidy_generic(df: pd.DataFrame, var_groups: list[VarGroup]) -> pd.Dat
         }
     )
 
-    def row_sum(codes: list[str]) -> pd.Series:
-        # reindex: codes absent from df become all-NaN columns, then count as 0
-        return df.reindex(columns=codes).fillna(0).sum(axis=1)
+    def row_sum(codes: list[str]) -> tuple[pd.Series, pd.Series]:
+        """The sum of `codes` and its margin of error; each null when any of
+        its components is missing, since an incomplete sum is not an
+        estimate."""
+        est, moe = estimates(df, codes), margins(df, codes)
+        value = est.sum(axis=1, min_count=len(codes))
+        value_moe = sum_moe(est, moe).where(moe.notna().all(axis=1) & value.notna())
+        return value, value_moe
 
     frames = []
     for var in var_groups:
-        value = row_sum(var.codes)
+        value, value_moe = row_sum(var.codes)
         if var.denom:
-            denom = row_sum(var.denom)
+            denom, denom_moe = row_sum(var.denom)
             percent = (value / denom * 100).round(1).where(denom > 0)
+            p = (value / denom).where(denom > 0)
+            p_moe = proportion_moe(p, value_moe, denom, denom_moe)
+            percent_moe = (100 * p_moe).round(1)
         else:
-            percent = None
+            percent = percent_moe = None
+        if len(var.codes) > 1:
+            value_moe = value_moe.round()  # a sum of counts
         frames.append(
             base.assign(
-                Section=var.section, Variable=var.label, Value=value, Percent=percent
+                Section=var.section,
+                Variable=var.label,
+                Value=value,
+                Value_MOE=value_moe,
+                Percent=percent,
+                Percent_MOE=percent_moe,
             )
         )
     if not frames:
@@ -179,7 +272,7 @@ def run_acs_b_scrape(
         merged = None
         for table_name, codes in fetch_specs.items():
             logger.debug("%s / %s / %s...", year, table_name, geo_label)
-            df = fetch(year, codes, for_clause, in_clause)
+            df = fetch(year, table_name, codes, for_clause, in_clause)
             if df is None:
                 return None
             if merged is None:

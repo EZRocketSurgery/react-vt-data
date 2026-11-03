@@ -110,6 +110,17 @@ def merge_census_cols(name_df, data_gdf, id_vars: list | None):
         value_name="Value",
     )
 
+    # The variable list names only estimates (E, PE), so the margins of error
+    # (M, PM) would drop out below. Attach each one to its estimate's row as
+    # MOE instead: DP03_0062M -> DP03_0062E, DP03_0062PM -> DP03_0062PE.
+    is_moe = df_long["Code"].str.fullmatch(r"\w+_\d+P?M")
+    moe = (
+        df_long[is_moe]
+        .assign(Code=lambda d: d["Code"].str[:-1] + "E")
+        .rename(columns={"Value": "MOE"})
+    )
+    df_long = df_long[~is_moe].merge(moe, on=[*id_vars, "Code"], how="left")
+
     # Merge to get the right names and drop the cols (keep Variable_Code - the
     # original census variable code - for downstream lineage)
     return (

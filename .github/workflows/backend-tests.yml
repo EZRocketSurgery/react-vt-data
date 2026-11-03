@@ -31,8 +31,6 @@ jobs:
         run: uv sync --frozen --python 3.13
       # No warehouse.duckdb or DuckLake exists here: tests that read real data
       # are marked `requires_warehouse` and skip (see tests/conftest.py).
-      # test_base.py still imports the deleted data_collection_OLD package; drop
-      # the --ignore once it is ported to data_collection.base.
       - name: Run the backend test suite
         working-directory: backend
-        run: uv run --frozen pytest -q --ignore=tests/test_base.py
+        run: uv run --frozen pytest -q
