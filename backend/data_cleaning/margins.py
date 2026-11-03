@@ -81,3 +81,48 @@ def ratio_moe_sql(ratio: str, num_moe: str, den: str, den_moe: str) -> str:
         str: A SQL expression
     """
     return f"SQRT(({num_moe}) ^ 2 + ({ratio}) ^ 2 * ({den_moe}) ^ 2) / ({den})"
+
+
+def sum_moe_agg_sql(estimate: str, moe: str, where: str = "TRUE") -> str:
+    """
+    :func:`sum_moe_sql` as an aggregate: the margin of the SUM of `estimate`
+    over a group's rows (those matching `where`). Null when any of their
+    margins is null.
+
+    Args:
+        estimate: SQL expression for each row's estimate
+        moe: SQL expression for its margin of error
+        where: SQL condition picking the rows summed
+
+    Returns:
+        str: A SQL aggregate expression
+    """
+    return f"""CASE
+        WHEN COUNT(*) FILTER (WHERE ({where}) AND {moe} IS NULL) > 0 THEN NULL
+        ELSE SQRT(
+            COALESCE(SUM(({moe}) ^ 2) FILTER (WHERE ({where}) AND {estimate} <> 0), 0)
+            + COALESCE(MAX(({moe}) ^ 2) FILTER (WHERE ({where}) AND {estimate} = 0), 0)
+        )
+    END"""
+
+
+def proportion_moe_sql(p: str, num_moe: str, den: str, den_moe: str) -> str:
+    """
+    90% margin of the proportion p = num / den, where num is a subset of den,
+    as data_collection.base.proportion_moe: sqrt(num_moe^2 - p^2 * den_moe^2)
+    / den, or the ratio form (+) when the term under the root isn't positive.
+
+    Args:
+        p: SQL expression for num / den
+        num_moe: SQL expression for the numerator's margin of error
+        den: SQL expression for the denominator
+        den_moe: SQL expression for the denominator's margin of error
+
+    Returns:
+        str: A SQL expression
+    """
+    under = f"({num_moe}) ^ 2 - ({p}) ^ 2 * ({den_moe}) ^ 2"
+    return f"""CASE
+        WHEN {under} > 0 THEN SQRT({under}) / ({den})
+        ELSE {ratio_moe_sql(p, num_moe, den, den_moe)}
+    END"""

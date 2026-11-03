@@ -142,3 +142,36 @@ def test_age_dependency_ratio_carries_a_ratio_margin(lake):
     # sqrt(num_moe^2 + R^2 * den_moe^2) / den, with R = 500 / 1000
     moe = round(100 * math.sqrt(num_moe**2 + 0.5**2 * den_moe**2) / 1000, 1)
     assert row == (50.0, moe, "high")  # CV 8%
+
+
+def test_dp_series_carry_their_published_margins(lake):
+    raw = pd.DataFrame(
+        [
+            (*TOWN, "50", "001", "SELECTED ECONOMIC CHARACTERISTICS: HEALTH INSURANCE",
+             "Civilian noninstitutionalized population", "No health insurance coverage",
+             "Estimate", "300", "45"),
+            (*TOWN, "50", "001", "INCOME AND BENEFITS",
+             "Median earnings for workers (dollars)", "Total", "Estimate", "41250",
+             "-555555555"),
+        ],
+        columns=["year", "geo_type", "NAME", "state", "county", "Category",
+                 "Subcategory", "Variable", "Measure", "Value", "MOE"],
+    )  # fmt: skip
+    lake.register("raw_df", raw)
+    lake.execute("CREATE TABLE lake.RAW.acs5_economic AS SELECT * FROM raw_df")
+    clean_acs5_timeseries.main(lake, ["health_insurance", "median_earnings"])
+
+    uninsured = lake.execute(
+        """
+        SELECT "Value", "Value_MOE", "Value_Reliability"
+        FROM lake.CLEANED.acs5Economics_healthInsurance_timeseries
+        """
+    ).fetchone()
+    earnings = lake.execute(
+        """
+        SELECT "Value", "Value_MOE", "Value_Reliability"
+        FROM lake.CLEANED.acs5Economics_medianEarnings_timeseries
+        """
+    ).fetchone()
+    assert uninsured == (300.0, 45.0, "high")  # CV 9%
+    assert earnings == (41250.0, 0.0, "high")  # controlled

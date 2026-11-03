@@ -4,6 +4,8 @@ small in-memory DP04 fixtures instead of the DuckLake. They exercise the base
 query, before the shared geography standardization is applied.
 """
 
+import math
+
 import duckdb
 import pandas as pd
 import pytest
@@ -21,15 +23,21 @@ RENT, MORTGAGE, NO_MORTGAGE = BURDEN_TENURES.keys()
 GEO = ("county_subdivision", "50", "007")
 
 
-def rows(year, name, subcategory, low, high, total, measure="Estimate"):
-    """DP04 rows for one tenure: the two burden brackets and the total."""
+def rows(
+    year, name, subcategory, low, high, total, measure="Estimate", moes=("4", "6", "9")
+):
+    """DP04 rows for one tenure: the two burden brackets and the total, with
+    their published margins."""
     return [
-        (year, name, *GEO, subcategory, variable, measure, value)
-        for variable, value in [
-            ("30.0 to 34.9 percent", low),
-            ("35.0 percent or more", high),
-            ("Total", total),
-        ]
+        (year, name, *GEO, subcategory, variable, measure, value, moe)
+        for (variable, value), moe in zip(
+            [
+                ("30.0 to 34.9 percent", low),
+                ("35.0 percent or more", high),
+                ("Total", total),
+            ],
+            moes,
+        )
     ]
 
 
@@ -48,11 +56,11 @@ def run(raw_rows):
         CREATE TABLE raw (
             year BIGINT, NAME VARCHAR, geo_type VARCHAR, state VARCHAR,
             county VARCHAR, Subcategory VARCHAR, Variable VARCHAR,
-            Measure VARCHAR, Value VARCHAR
+            Measure VARCHAR, Value VARCHAR, MOE VARCHAR
         )
         """
     )
-    con.executemany("INSERT INTO raw VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", raw_rows)
+    con.executemany("INSERT INTO raw VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", raw_rows)
     df = con.execute(housing_cost_burden_sql(source="raw")).df()
     return df.set_index(["year", "NAME", "Variable"])
 
@@ -86,6 +94,7 @@ def test_percent_estimate_years_are_included():
             "35.0 percent or more",
             "Percent Estimate",
             "30.0",
+            "5.0",
         ),
     ]
     df = run(raw)
@@ -105,6 +114,7 @@ def test_percent_rows_and_early_years_are_ignored():
                 "35.0 percent or more",
                 "Percent",
                 "99.9",
+                "5.0",
             ),
         ]
         + complete_place(2012, "A")
@@ -188,3 +198,51 @@ def test_rates_are_rounded_to_one_decimal():
     df = run(raw)
 
     assert value(df, 2020, "A", "Renters") == 33.3
+
+
+def test_margins_by_tenure_and_all_households():
+    raw = (
+        rows(2020, "A", RENT, "10", "30", "100", moes=("6", "8", "12"))
+        + rows(2020, "A", MORTGAGE, "5", "15", "80", moes=("4", "7", "-555555555"))
+        + rows(2020, "A", NO_MORTGAGE, "2", "3", "50", moes=("3", "3", "9"))
+    )
+    df = run(raw)
+
+    # 40 renters of 100: the brackets' margins summed, then the proportion
+    # form, sqrt(10^2 - 0.4^2 * 12^2) / 100.
+    assert value(df, 2020, "A", "Renters", "Value_MOE") == 10
+    assert value(df, 2020, "A", "Renters", "Percent_MOE") == round(
+        100 * math.sqrt(10**2 - 0.4**2 * 12**2) / 100, 1
+    )
+    # A controlled total has no margin.
+    assert value(df, 2020, "A", "Owners with a mortgage", "Total_MOE") == 0
+    assert value(df, 2020, "A", "Owners with a mortgage", "Total_Reliability") == (
+        "high"
+    )
+
+    value_moe = math.sqrt(6**2 + 8**2 + 4**2 + 7**2 + 3**2 + 3**2)
+    total_moe = math.sqrt(12**2 + 0**2 + 9**2)
+    assert value(df, 2020, "A", ALL_HOUSEHOLDS, "Value_MOE") == round(value_moe)
+    assert value(df, 2020, "A", ALL_HOUSEHOLDS, "Total_MOE") == round(total_moe)
+    p = 65 / 230
+    assert value(df, 2020, "A", ALL_HOUSEHOLDS, "Percent_MOE") == round(
+        100 * math.sqrt(value_moe**2 - p**2 * total_moe**2) / 230, 1
+    )
+
+
+def test_zero_bracket_margins_count_once():
+    # Both brackets are zero: only the larger modeled margin counts.
+    raw = rows(2020, "A", RENT, "0", "0", "100", moes=("12", "16", "20"))
+    df = run(raw)
+
+    assert value(df, 2020, "A", "Renters", "Value_MOE") == 16
+    assert value(df, 2020, "A", "Renters", "Percent_Reliability") == "low"
+
+
+def test_missing_margin_leaves_the_margin_missing():
+    raw = rows(2020, "A", RENT, "10", "30", "100", moes=("-222222222", "8", "12"))
+    df = run(raw)
+
+    assert value(df, 2020, "A", "Renters") == 40.0
+    assert value(df, 2020, "A", "Renters", "Value_MOE") is None
+    assert value(df, 2020, "A", "Renters", "Percent_MOE") is None

@@ -37,6 +37,26 @@ DP_UNAVAILABLE = {
 }
 
 
+def published_moe_sql(moe: str) -> str:
+    """
+    A raw DP table's published margin of error as a number. -555555555 means
+    the estimate is controlled, so its margin is zero; other annotation codes
+    (negative, "(X)") are missing.
+
+    Args:
+        moe: SQL expression for the raw MOE column
+
+    Returns:
+        str: A SQL CASE expression
+    """
+    return f"""CASE
+        WHEN TRY_CAST({moe} AS DOUBLE) = -555555555 THEN 0
+        WHEN TRY_CAST({moe} AS DOUBLE) IN ({inline_sql_unavailable(DP_UNAVAILABLE)})
+            THEN NULL
+        WHEN TRY_CAST({moe} AS DOUBLE) >= 0 THEN TRY_CAST({moe} AS DOUBLE)
+    END"""
+
+
 def _dp_select_sql(dp: str, raw_table_name: str) -> str:
     """
     Build the SELECT query for a single census DP table, joined against `vt_town_lines`
@@ -85,14 +105,8 @@ def _dp_select_sql(dp: str, raw_table_name: str) -> str:
                     ELSE CAST(n.Value AS DOUBLE)
                 END AS "value",
                 -- The published margin of error (M for an estimate, PM for a
-                -- percent). -555555555: the estimate is controlled, so its
-                -- margin is zero; other codes (negative, "(X)") are missing.
-                CASE
-                    WHEN TRY_CAST(n.MOE AS DOUBLE) = -555555555 THEN 0
-                    WHEN TRY_CAST(n.MOE AS DOUBLE) IN ({inline_sql_unavailable(DP_UNAVAILABLE)})
-                        THEN NULL
-                    WHEN TRY_CAST(n.MOE AS DOUBLE) >= 0 THEN TRY_CAST(n.MOE AS DOUBLE)
-                END AS moe,
+                -- percent).
+                {published_moe_sql("n.MOE")} AS moe,
                 '{dp}' AS "table",
                 n.geo_type_norm AS geo_type,
                 CASE
