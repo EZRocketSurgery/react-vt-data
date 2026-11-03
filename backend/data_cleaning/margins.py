@@ -39,3 +39,45 @@ def reliability_sql(estimate: str, moe: str) -> str:
         WHEN {cv} <= {LOW_CV} THEN 'medium'
         ELSE 'low'
     END"""
+
+
+def sum_moe_sql(terms: list[tuple[str, str]]) -> str:
+    """
+    90% margin of a sum of estimates: the root sum of their squared margins
+    (ACS handbook). As in data_collection.base.sum_moe, only the largest
+    margin among zero estimates counts, since summing many modeled zero
+    margins overstates the error. Null when any margin is null.
+
+    Args:
+        terms: (estimate, margin of error) SQL expression pairs
+
+    Returns:
+        str: A SQL expression
+    """
+    nonzero = " + ".join(
+        f"CASE WHEN {e} = 0 THEN 0 ELSE ({m}) ^ 2 END" for e, m in terms
+    )
+    zero = ", ".join(f"CASE WHEN {e} = 0 THEN ({m}) ^ 2 ELSE 0 END" for e, m in terms)
+    missing = " OR ".join(f"{m} IS NULL" for _, m in terms)
+    return f"""CASE
+        WHEN {missing} THEN NULL
+        ELSE SQRT({nonzero} + GREATEST({zero}))
+    END"""
+
+
+def ratio_moe_sql(ratio: str, num_moe: str, den: str, den_moe: str) -> str:
+    """
+    90% margin of the ratio num / den, where num is not a subset of den:
+    sqrt(num_moe^2 + ratio^2 * den_moe^2) / den (ACS handbook). A subset
+    takes the proportion form instead (data_collection.base.proportion_moe).
+
+    Args:
+        ratio: SQL expression for num / den
+        num_moe: SQL expression for the numerator's margin of error
+        den: SQL expression for the denominator
+        den_moe: SQL expression for the denominator's margin of error
+
+    Returns:
+        str: A SQL expression
+    """
+    return f"SQRT(({num_moe}) ^ 2 + ({ratio}) ^ 2 * ({den_moe}) ^ 2) / ({den})"

@@ -4,6 +4,8 @@ cleaners: RAW tidy rows (as written by data_collection/base.py) to the CLEANED
 tidy tables and single-variable series.
 """
 
+import math
+
 import duckdb
 import pandas as pd
 import pytest
@@ -15,6 +17,16 @@ ROWS = {
     "demographics": [
         ("Age/Sex", "Median Age", 38.2, 1.9, None, None),
         ("Age/Sex", "Population (ACS)", 2000.0, 0.0, 100.0, 0.0),
+        # Age bands for the age dependency ratio: 500 dependents to 1,000 of
+        # working age.
+        ("Age/Sex", "Under 18", 300.0, 40.0, 15.0, 2.0),
+        ("Age/Sex", "65 to 74", 200.0, 30.0, 10.0, 1.5),
+        ("Age/Sex", "75 Plus", 0.0, 15.0, 0.0, 0.8),
+        ("Age/Sex", "18 to 24", 100.0, 20.0, 5.0, 1.0),
+        ("Age/Sex", "25 to 34", 200.0, 30.0, 10.0, 1.5),
+        ("Age/Sex", "35 to 44", 200.0, 30.0, 10.0, 1.5),
+        ("Age/Sex", "45 to 54", 250.0, 40.0, 12.5, 2.0),
+        ("Age/Sex", "55 to 64", 250.0, 40.0, 12.5, 2.0),
         ("Race", "Asian", 0.0, 20.0, 0.0, 0.0),
         ("Race", "Native Hawaiian and Other Pacific Islander", 150.0, 80.0, 0.0, 0.0),
     ],
@@ -114,3 +126,19 @@ def test_single_variable_series_carry_their_margin(lake):
     ).fetchone()
     assert income == (68854.0, 4120.0, "high")  # CV 4%
     assert vacancy == ("Rental Vacancy Rate", 2.6, 1.9, "low")  # CV 44%
+
+
+def test_age_dependency_ratio_carries_a_ratio_margin(lake):
+    clean_acs5_timeseries.main(lake, ["age_dependency_ratio"])
+    row = lake.execute(
+        """
+        SELECT age_dependency_ratio, age_dependency_ratio_moe,
+            age_dependency_ratio_reliability
+        FROM lake.CLEANED.acs5Demographics_ageDependencyRatio_timeseries
+        """
+    ).fetchone()
+    num_moe = math.sqrt(40**2 + 30**2 + 15**2)
+    den_moe = math.sqrt(20**2 + 30**2 + 30**2 + 40**2 + 40**2)
+    # sqrt(num_moe^2 + R^2 * den_moe^2) / den, with R = 500 / 1000
+    moe = round(100 * math.sqrt(num_moe**2 + 0.5**2 * den_moe**2) / 1000, 1)
+    assert row == (50.0, moe, "high")  # CV 8%

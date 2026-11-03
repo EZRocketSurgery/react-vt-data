@@ -31,7 +31,7 @@ from data_cleaning.geo_lookup import (
     build_geo_lookups,
     write_table,
 )
-from data_cleaning.margins import reliability_sql
+from data_cleaning.margins import ratio_moe_sql, reliability_sql, sum_moe_sql
 
 # Raw identifier columns every base query must expose (see `acs_geo_sql`)
 KEYS = "year, NAME, geo_type, state, county"
@@ -184,45 +184,65 @@ def population_change_sql() -> str:
 
 def age_dependency_ratio_sql() -> str:
     """
-    SQL calculating age dependency ratio: (`Under 18` + `65 and over`) / (`18 to 64`) * 100.
+    SQL calculating age dependency ratio: (`Under 18` + `65 and over`) / (`18 to 64`) * 100,
+    with its 90% margin of error and reliability label.
+
+    The dependents and the working-age population don't overlap, so the margin
+    takes the ratio form, from the two sums' margins.
 
     Returns:
         str: A SQL query that creates the age dependency ratio table
     """
-    ages = [
-        "Under 18",
-        "18 to 24",
-        "25 to 34",
-        "35 to 44",
-        "45 to 54",
-        "55 to 64",
-        "65 to 74",
-        "75 Plus",
-    ]
+    dependents = ["Under 18", "65 to 74", "75 Plus"]
+    working = ["18 to 24", "25 to 34", "35 to 44", "45 to 54", "55 to 64"]
+    ages = dependents + working
     wide = ",\n".join(
-        f"MAX(CASE WHEN Variable = '{a}' THEN v END) AS \"{a}\"" for a in ages
+        f"MAX(CASE WHEN Variable = '{a}' THEN {col} END) AS \"{a}{suffix}\""
+        for a in ages
+        for col, suffix in [("v", ""), ("m", " MOE")]
     )
-    working = " + ".join(f'"{a}"' for a in ages[1:6])
+
+    def total(group: list[str]) -> str:
+        return " + ".join(f'"{a}"' for a in group)
+
+    def total_moe(group: list[str]) -> str:
+        return sum_moe_sql([(f'"{a}"', f'"{a} MOE"') for a in group])
 
     return f"""--sql
         SELECT
             {KEYS},
-            ROUND(
-                CASE
-                    WHEN ({working}) > 0
-                        THEN ("Under 18" + "65 to 74" + "75 Plus")
-                            / ({working}) * 100
-                END,
-                1
-            ) AS age_dependency_ratio
+            age_dependency_ratio,
+            age_dependency_ratio_moe,
+            {reliability_sql("age_dependency_ratio", "age_dependency_ratio_moe")}
+                AS age_dependency_ratio_reliability
         FROM (
-            SELECT {KEYS}, {wide}
+            SELECT
+                {KEYS},
+                ROUND(100 * ratio, 1) AS age_dependency_ratio,
+                ROUND(
+                    100 * {ratio_moe_sql("ratio", "num_moe", "den", "den_moe")}, 1
+                ) AS age_dependency_ratio_moe
             FROM (
-                SELECT {KEYS}, Variable, {numeric("Value")} AS v
-                FROM lake.RAW.demographics
-                WHERE Variable IN ({in_list(ages)})
+                SELECT
+                    {KEYS},
+                    ({total(dependents)}) / NULLIF({total(working)}, 0) AS ratio,
+                    {total_moe(dependents)} AS num_moe,
+                    NULLIF({total(working)}, 0) AS den,
+                    {total_moe(working)} AS den_moe
+                FROM (
+                    SELECT {KEYS}, {wide}
+                    FROM (
+                        SELECT
+                            {KEYS},
+                            Variable,
+                            {numeric("Value")} AS v,
+                            {numeric("Value_MOE")} AS m
+                        FROM lake.RAW.demographics
+                        WHERE Variable IN ({in_list(ages)})
+                    )
+                    GROUP BY {KEYS}
+                )
             )
-            GROUP BY {KEYS}
         )
         """
 
@@ -401,7 +421,7 @@ CONFIGS: dict[str, TimeSeries] = {
     "age_dependency_ratio": TimeSeries(
         table="acs5Demographics_ageDependencyRatio_timeseries",
         base=age_dependency_ratio_sql(),
-        columns=("age_dependency_ratio",),
+        columns=with_moe("age_dependency_ratio"),
     ),
     # Health Insurance Coverage (Public, Private, None)
     "health_insurance": TimeSeries(
