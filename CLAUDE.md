@@ -25,9 +25,8 @@ npm run format:check # Check formatting without modifying
 ### Backend (FastAPI, `backend/`)
 
 ```bash
-uvicorn api.main:app --reload --port 6767  # API server on localhost:6767
-pip install -r requirements.txt            # Install dependencies
-streamlit run Home.py                      # Legacy Streamlit interface (not primary)
+uv sync                                            # Install dependencies
+uv run uvicorn api.main:app --reload --port 6767   # API server on localhost:6767
 uv run sqlfluff lint query/sql data_cleaning/sql   # Lint the Jinja SQL templates
 uv run sqlfluff fix query/sql data_cleaning/sql    # Auto-fix SQL lint issues
 ```
