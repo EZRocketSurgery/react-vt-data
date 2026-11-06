@@ -1,6 +1,6 @@
 # Documentation
 
-New here? Start with the [Codebase Primer](codebase_primer.md). Setup and
+New here? Start with the [Codebase Primer](Codebase_Primer.md). Setup and
 day-to-day commands are in the [root README](../README.md).
 
 ## Layout
