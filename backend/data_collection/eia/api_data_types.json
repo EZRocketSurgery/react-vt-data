@@ -1,0 +1,5023 @@
+{
+  "crude-oil-imports": {
+    "name": "Crude Oil Imports",
+    "description": "Crude oil imports by country to destination, \r\n        includes type, grade, quantity.  Source: EIA-814  Interactive data \r\n        product:  www.eia.gov/petroleum/imports/companylevel/",
+    "data": {
+      "quantity": {
+        "alias": null,
+        "units": "thousand barrels"
+      }
+    },
+    "facets": [
+      "originId",
+      "originType",
+      "destinationId",
+      "destinationType",
+      "gradeId"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "2009-01",
+    "end": "2026-08"
+  },
+  "international": {
+    "name": "International",
+    "description": "Country level production, consumption, imports, exports by energy source (petroleum, natural gas, electricity, renewable, etc.)  \r\n        Interactive product:  https://www.eia.gov/international/data/world",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "productId",
+      "activityId",
+      "countryRegionId",
+      "countryRegionTypeId",
+      "dataFlagId",
+      "unit"
+    ],
+    "frequencies": [
+      "monthly",
+      "quarterly",
+      "annual"
+    ],
+    "start": "1949-01",
+    "end": "2026-07"
+  },
+  "seds": {
+    "name": "State Energy Data System (SEDS)",
+    "description": "Estimated production, consumption, price, and expenditure data for all energy sources by state and sector.  \r\n        Source:  https://www.eia.gov/state/seds/seds-technical-notes-complete.php  \r\n        Product:  SEDS (https://www.eia.gov/state/seds/)",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "seriesId",
+      "stateId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1960",
+    "end": "2024"
+  },
+  "steo": {
+    "name": "Short Term Energy Outlook",
+    "description": "Monthly short term (18 month) projections using STEO model.  \r\n        Report and interactive projection data browser:  STEO (www.eia.gov/steo/)",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "seriesId"
+    ],
+    "frequencies": [
+      "annual",
+      "quarterly",
+      "monthly"
+    ],
+    "start": "1974-01",
+    "end": "2027-12"
+  },
+  "total-energy": {
+    "name": "Total Energy",
+    "description": "These data represent the most recent comprehensive energy statistics integrated across all energy sources.  The data includes total energy production, consumption, stocks, and trade; energy prices; overviews of petroleum, natural gas, coal, electricity, nuclear energy, renewable energy, and carbon dioxide emissions; and data unit conversions values.  Source: https://www.eia.gov/totalenergy/data/monthly/pdf/mer_a_doc.pdf  Report:  MER (https://www.eia.gov/totalenergy/data/monthly/)",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "msn"
+    ],
+    "frequencies": [
+      "annual",
+      "monthly"
+    ],
+    "start": "1949-01",
+    "end": "2121-12"
+  },
+  "coal/consumption-and-quality": {
+    "name": "Consumption and Quality",
+    "description": "Coal consumption and quality data by state and sector, \n            including price, reciepts, heat content, sulfur content, ash content, and stocks. \n            Source: EIA Form 7A and MSHA Form 7000-2.  Interactive browser:  https://www.eia.gov/coal/data/browser/",
+    "data": {
+      "receipts": {
+        "alias": null,
+        "units": "short tons"
+      },
+      "consumption": {
+        "alias": null,
+        "units": "short tons"
+      },
+      "stocks": {
+        "alias": null,
+        "units": "short tons"
+      },
+      "price": {
+        "alias": null,
+        "units": "dollars per short ton"
+      },
+      "heat-content": {
+        "alias": null,
+        "units": "average sulfur percent by weight"
+      },
+      "sulfur-content": {
+        "alias": null,
+        "units": "average sulfur percent by weight"
+      },
+      "ash-content": {
+        "alias": null,
+        "units": "average ash percent by weight"
+      }
+    },
+    "facets": [
+      "location",
+      "sector"
+    ],
+    "frequencies": [
+      "quarterly",
+      "annual"
+    ],
+    "start": "2000",
+    "end": "2025"
+  },
+  "coal/aggregate-production": {
+    "name": "Aggregate Production",
+    "description": "Coal state aggregated data by mine type, includes production, \r\n        productivity, labor hours, employees, and coal rank.  Source: EIA Form 7A and MSHA Form \r\n        7000-2.  Interactive browser:  https://www.eia.gov/coal/data/browser/",
+    "data": {
+      "production": {
+        "alias": null,
+        "units": "short tons"
+      },
+      "number-of-mines": {
+        "alias": null,
+        "units": "number of mines"
+      },
+      "labor-hours": {
+        "alias": null,
+        "units": "hours"
+      },
+      "average-employees": {
+        "alias": null,
+        "units": "number of employees"
+      },
+      "productivity": {
+        "alias": null,
+        "units": "short tons per labor hour"
+      }
+    },
+    "facets": [
+      "stateRegionId",
+      "coalRankId",
+      "mineTypeId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2001",
+    "end": "2024"
+  },
+  "coal/exports-imports-quantity-price": {
+    "name": "Exports\\Imports Quantity\\Price",
+    "description": "Coal import/export data, including price, quantity, country, \r\n        rank, and customs district.  Source: EIA Form 7A and MSHA Form 7000-2.  Interactive \r\n        browser:  https://www.eia.gov/coal/data/browser/",
+    "data": {
+      "quantity": {
+        "alias": null,
+        "units": "short tons"
+      },
+      "price": {
+        "alias": null,
+        "units": "dollars per short ton"
+      }
+    },
+    "facets": [
+      "exportImportType",
+      "coalRankId",
+      "countryId",
+      "customsDistrictId"
+    ],
+    "frequencies": [
+      "quarterly",
+      "annual"
+    ],
+    "start": "2000",
+    "end": "2025"
+  },
+  "coal/market-sales-price": {
+    "name": "Market Sales Price",
+    "description": "Coal market sales prices and amounts by mine types for \r\n        regions and states (unless withheld for pricing protections).  Source: EIA Form \r\n            7A and MSHA Form 7000-2.  Interactive browser:  https://www.eia.gov/coal/data/browser/",
+    "data": {
+      "sales": {
+        "alias": null,
+        "units": "short tons"
+      },
+      "price": {
+        "alias": null,
+        "units": "dollars per short ton"
+      }
+    },
+    "facets": [
+      "stateRegionId",
+      "marketTypeId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2001",
+    "end": "2024"
+  },
+  "coal/mine-production": {
+    "name": "Mine Production",
+    "description": "Coal mine-level data, including production, region, state, \r\n        county, rank, status, type, name and description.  Source: EIA Form 7A and MSHA \r\n        Form 7000-2.  Interactive browser:  https://www.eia.gov/coal/data/browser/",
+    "data": {
+      "production": {
+        "alias": null,
+        "units": "short tons"
+      },
+      "labor-hours": {
+        "alias": null,
+        "units": "hours"
+      },
+      "average-employees": {
+        "alias": null,
+        "units": "number of employees"
+      },
+      "refuse-flag": {},
+      "latitude": {},
+      "longitude": {},
+      "operating-company": {},
+      "operating-company-address": {}
+    },
+    "facets": [
+      "mineMSHAId",
+      "stateId",
+      "regionId",
+      "supplyRegionId",
+      "censusRegionId",
+      "mississippiRegionId",
+      "mineCountyId",
+      "coalRankId",
+      "mineTypeId",
+      "mineStatusId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2001",
+    "end": "2024"
+  },
+  "coal/price-by-rank": {
+    "name": "Price by Rank",
+    "description": "Coal prices by rank data for region and state.  \r\n        Source: EIA Form 7A and MSHA Form 7000-2.  Interactive browser: \r\n        https://www.eia.gov/coal/data/browser/  ",
+    "data": {
+      "price": {
+        "alias": null,
+        "units": "dollars per short ton"
+      }
+    },
+    "facets": [
+      "stateRegionId",
+      "coalRankId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2001",
+    "end": "2024"
+  },
+  "coal/reserves-capacity": {
+    "name": "Reserves Capacity",
+    "description": "Coal capacity data, including productive capacity, stocks, \r\n        and recoverable reserves by state, region and mine type.  Source: EIA Form 7A and \r\n        MSHA Form 7000-2.  Interactive browser:  https://www.eia.gov/coal/data/browser/",
+    "data": {
+      "productive-capacity": {
+        "alias": null,
+        "units": "short tons"
+      },
+      "recoverable-reserves": {
+        "alias": null,
+        "units": "short tons"
+      },
+      "producer-distributor-stocks": {
+        "alias": null,
+        "units": "short tons"
+      }
+    },
+    "facets": [
+      "stateId",
+      "mineTypeId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2001",
+    "end": "2024"
+  },
+  "coal/shipments/mine-state-aggregates": {
+    "name": "Mine State Aggregates",
+    "description": "Coal shipments aggregated at state-level data, including price, \r\n        quantity, quality, and rank.  Source: EIA Form 7A and MSHA Form 7000-2.  Interactive browser:  \r\n        https://www.eia.gov/coal/data/browser/",
+    "data": {
+      "quantity": {
+        "alias": null,
+        "units": "tons"
+      },
+      "price": {
+        "alias": null,
+        "units": "average dollars per ton"
+      },
+      "heat-content": {
+        "alias": null,
+        "units": "Btu per pound"
+      },
+      "sulfur-content": {
+        "alias": null,
+        "units": "percent by weight"
+      },
+      "ash-content": {
+        "alias": null,
+        "units": "percent by weight"
+      }
+    },
+    "facets": [
+      "mineStateId",
+      "coalRankId"
+    ],
+    "frequencies": [
+      "quarterly",
+      "annual"
+    ],
+    "start": "2008",
+    "end": "2025"
+  },
+  "coal/shipments/receipts": {
+    "name": "Receipts",
+    "description": "Coal shipment detailed by reciepient data, including transportation type, \r\n        supplier, mine, coal basin, county, state, rank, contract type, price, quantity, and quality. \r\n        Source: EIA Form 7A and MSHA Form 7000-2.  Interactive browser:  https://www.eia.gov/coal/data/browser/",
+    "data": {
+      "quantity": {
+        "alias": null,
+        "units": "tons"
+      },
+      "price": {
+        "alias": null,
+        "units": "average dollars per ton"
+      },
+      "heat-content": {
+        "alias": null,
+        "units": "Btu per pound"
+      },
+      "sulfur-content": {
+        "alias": null,
+        "units": "percent by weight"
+      },
+      "ash-content": {
+        "alias": null,
+        "units": "percent by weight"
+      }
+    },
+    "facets": [
+      "plantStateId",
+      "mineStateId",
+      "mineTypeId",
+      "mineMSHAId",
+      "mineBasinId",
+      "mineCountyId",
+      "contractType",
+      "transportationMode",
+      "coalSupplier",
+      "coalRankId",
+      "plantId"
+    ],
+    "frequencies": [
+      "quarterly",
+      "annual"
+    ],
+    "start": "2008",
+    "end": "2025"
+  },
+  "coal/shipments/mine-aggregates": {
+    "name": "Mine Aggregates",
+    "description": "Coal shipments aggregated at mine-level data, \r\n        including price, quantity, quality, and rank.  Source: EIA Form 7A and \r\n        MSHA Form 7000-2.  Interactive browser:  https://www.eia.gov/coal/data/browser/",
+    "data": {
+      "quantity": {
+        "alias": null,
+        "units": "tons"
+      },
+      "price": {
+        "alias": null,
+        "units": "average dollars per ton"
+      },
+      "heat-content": {
+        "alias": null,
+        "units": "Btu per pound"
+      },
+      "sulfur-content": {
+        "alias": null,
+        "units": "percent by weight"
+      },
+      "ash-content": {
+        "alias": null,
+        "units": "percent by weight"
+      }
+    },
+    "facets": [
+      "mineStateId",
+      "mineMSHAId",
+      "coalRankId"
+    ],
+    "frequencies": [
+      "quarterly",
+      "annual"
+    ],
+    "start": "2008",
+    "end": "2025"
+  },
+  "coal/shipments/plant-state-aggregates": {
+    "name": "Plant State Aggregates",
+    "description": "Coal reciepts aggregated at state-level data, including price, \r\n        quantity, quality, and rank.  Source: EIA Form 7A and MSHA Form 7000-2.  Interactive \r\n        browser:  https://www.eia.gov/coal/data/browser/",
+    "data": {
+      "quantity": {
+        "alias": null,
+        "units": "tons"
+      },
+      "price": {
+        "alias": null,
+        "units": "average dollars per ton"
+      },
+      "heat-content": {
+        "alias": null,
+        "units": "Btu per pound"
+      },
+      "sulfur-content": {
+        "alias": null,
+        "units": "percent by weight"
+      },
+      "ash-content": {
+        "alias": null,
+        "units": "percent by weight"
+      }
+    },
+    "facets": [
+      "plantStateId",
+      "coalRankId"
+    ],
+    "frequencies": [
+      "quarterly",
+      "annual"
+    ],
+    "start": "2008",
+    "end": "2025"
+  },
+  "coal/shipments/plant-aggregates": {
+    "name": "Plant Aggregates",
+    "description": "Coal reciepts aggregated to plant-level data, \n        including price, quantity, quality, and rank.  Source: EIA Form 7A \n            and MSHA Form 7000-2.  Interactive browser:  https://www.eia.gov/coal/data/browser/",
+    "data": {
+      "quantity": {
+        "alias": null,
+        "units": "tons"
+      },
+      "price": {
+        "alias": null,
+        "units": "average dollars per ton"
+      },
+      "sulfur-content": {
+        "alias": null,
+        "units": "percent by weight"
+      },
+      "ash-content": {
+        "alias": null,
+        "units": "percent by weight"
+      },
+      "heat-content": {
+        "alias": null,
+        "units": "Btu per pound"
+      }
+    },
+    "facets": [
+      "location",
+      "plant",
+      "rank"
+    ],
+    "frequencies": [
+      "quarterly",
+      "annual"
+    ],
+    "start": "2008",
+    "end": "2025"
+  },
+  "coal/shipments/by-mine-by-plant": {
+    "name": "By Mine, By Plant",
+    "description": "Coal shipments from mine- to plant-level data, including price, quantity, quality, and rank.  Source: EIA Form 7A and MSHA Form 7000-2.  Interactive browser:  https://www.eia.gov/coal/data/browser/",
+    "data": {
+      "quantity": {
+        "alias": null,
+        "units": "tons"
+      },
+      "price": {
+        "alias": null,
+        "units": "average dollars per ton"
+      },
+      "sulfur-content": {
+        "alias": null,
+        "units": "percent by weight"
+      },
+      "ash-content": {
+        "alias": null,
+        "units": "percent by weight"
+      },
+      "heat-content": {
+        "alias": null,
+        "units": "Btu per pound"
+      }
+    },
+    "facets": [
+      "mineStateId",
+      "mineMSHAId",
+      "coalSupplier",
+      "plantStateId",
+      "plantId",
+      "coalType"
+    ],
+    "frequencies": [
+      "quarterly",
+      "annual"
+    ],
+    "start": "2008",
+    "end": "2025"
+  },
+  "electricity/retail-sales": {
+    "name": "Electricity Sales to Ultimate Customers",
+    "description": "Electricity sales to ultimate customer by state and sector (number of customers, average price, revenue, and megawatthours of sales).  \n    Sources: Forms EIA-826, EIA-861, EIA-861M",
+    "data": {
+      "revenue": {
+        "alias": "Revenue from Sales to Ultimate Customers",
+        "units": "million dollars"
+      },
+      "sales": {
+        "alias": "Megawatt-hours Sold to Ultimate Customers",
+        "units": "million kilowatt hours"
+      },
+      "price": {
+        "alias": "Average Price of Electricity to Ultimate Customers",
+        "units": "cents per kilowatt-hour"
+      },
+      "customers": {
+        "alias": "Number of Ultimate Customers",
+        "units": "number of customers"
+      }
+    },
+    "facets": [
+      "stateid",
+      "sectorid"
+    ],
+    "frequencies": [
+      "monthly",
+      "quarterly",
+      "annual"
+    ],
+    "start": "2001-01",
+    "end": "2026-08"
+  },
+  "electricity/electric-power-operational-data": {
+    "name": "Electric Power Operations (Annual and Monthly)",
+    "description": "Monthly and annual electric power operations by state, sector, and energy source.\n    Source: Form EIA-923",
+    "data": {
+      "generation": {
+        "alias": "Utility Scale Electricity Net Generation",
+        "units": null
+      },
+      "total-consumption": {
+        "alias": "Consumption of Fuels for Electricity Generation and Useful Thermal Output (Physical Units)",
+        "units": null
+      },
+      "consumption-for-eg": {
+        "alias": "Consumption of Fuels for Electricity Generation (Physical Units)",
+        "units": null
+      },
+      "consumption-uto": {
+        "alias": "Consumption of Fuels for Useful Thermal Output (Physical Units)",
+        "units": null
+      },
+      "total-consumption-btu": {
+        "alias": "Consumption of Fuels for Electricity Generation and Useful Thermal Output (BTUs)",
+        "units": null
+      },
+      "consumption-for-eg-btu": {
+        "alias": "Consumption of Fuels for Electricity Generation (BTUs)",
+        "units": null
+      },
+      "consumption-uto-btu": {
+        "alias": "Consumption of Fuels for Useful Thermal Output (BTUs)",
+        "units": null
+      },
+      "stocks": {
+        "alias": "Stocks of Fuel (Physical Units)",
+        "units": null
+      },
+      "receipts": {
+        "alias": "Receipts of Fuel (Physical Units)",
+        "units": null
+      },
+      "receipts-btu": {
+        "alias": "Receipts of Fuel (BTUs)",
+        "units": null
+      },
+      "cost": {
+        "alias": "Average Cost of Fuels (per Physical Unit)",
+        "units": null
+      },
+      "cost-per-btu": {
+        "alias": "Average Cost of Fuels (per BTU)",
+        "units": null
+      },
+      "sulfur-content": {
+        "alias": "Average Sulfur Content of Consumed Fuel",
+        "units": null
+      },
+      "ash-content": {
+        "alias": "Average Ash Content of Consumed Fuel",
+        "units": null
+      },
+      "heat-content": {
+        "alias": "Average Heat Content of Consumed Fuels",
+        "units": null
+      }
+    },
+    "facets": [
+      "location",
+      "sectorid",
+      "fueltypeid"
+    ],
+    "frequencies": [
+      "monthly",
+      "quarterly",
+      "annual"
+    ],
+    "start": "2001-01",
+    "end": "2026-08"
+  },
+  "electricity/operating-generator-capacity": {
+    "name": "Inventory of Operable Generators",
+    "description": "Inventory of operable generators in the U.S.\n    Source: Forms EIA-860, EIA-860M",
+    "data": {
+      "nameplate-capacity-mw": {
+        "alias": "Nameplate Capacity",
+        "units": "MW"
+      },
+      "net-summer-capacity-mw": {
+        "alias": "Net Summer Capacity",
+        "units": "MW"
+      },
+      "net-winter-capacity-mw": {
+        "alias": "Net Winter Capacity",
+        "units": "MW"
+      },
+      "operating-year-month": {
+        "alias": "Operating Date (Year and Month)",
+        "units": null
+      },
+      "planned-retirement-year-month": {
+        "alias": "Planned Retirement Date (Year and Month)",
+        "units": null
+      },
+      "planned-derate-year-month": {
+        "alias": "Planned Derate Date (Year and Month)",
+        "units": null
+      },
+      "planned-derate-summer-cap-mw": {
+        "alias": "Magnitude of Planned Derate (Summer Capacity)",
+        "units": "MW"
+      },
+      "planned-uprate-year-month": {
+        "alias": "Planned Uprate Date (Year and Month)",
+        "units": null
+      },
+      "planned-uprate-summer-cap-mw": {
+        "alias": "Magnitude of Planned Uprate (Summer Capacity)",
+        "units": "MW"
+      },
+      "county": {
+        "alias": "County",
+        "units": null
+      },
+      "longitude": {
+        "alias": "Longitude",
+        "units": null
+      },
+      "latitude": {
+        "alias": "Latitude",
+        "units": null
+      }
+    },
+    "facets": [
+      "stateid",
+      "sector",
+      "entityid",
+      "plantid",
+      "generatorid",
+      "unit",
+      "technology",
+      "energy_source_code",
+      "prime_mover_code",
+      "balancing_authority_code",
+      "status"
+    ],
+    "frequencies": [
+      "monthly"
+    ],
+    "start": "2008-01",
+    "end": "2026-08"
+  },
+  "electricity/facility-fuel": {
+    "name": "Electric Power Operations for Individual Power Plants (Annual and Monthly)",
+    "description": "Annual and monthly electric power operations for individual power plants, by energy source and prime mover\n    Source: Form EIA-923",
+    "data": {
+      "generation": {
+        "alias": "Net Generation",
+        "units": "megawatthours"
+      },
+      "gross-generation": {
+        "alias": "Gross Generation",
+        "units": "megawatthours"
+      },
+      "total-consumption": {
+        "alias": "Consumption of Fuels for Electricity Generation and Useful Thermal Output (Physical Units)",
+        "units": null
+      },
+      "total-consumption-btu": {
+        "alias": "Consumption of Fuels for Electricity Generation and Useful Thermal Output (BTUs)",
+        "units": "MMBtu"
+      },
+      "consumption-for-eg": {
+        "alias": "Consumption of Fuels for Electricity Generation (Physical Units)",
+        "units": null
+      },
+      "consumption-for-eg-btu": {
+        "alias": "Consumption of Fuels for Electricity Generation (BTUs)",
+        "units": "MMBtu"
+      },
+      "average-heat-content": {
+        "alias": "Average Heat Content of Consumed Fuels",
+        "units": null
+      }
+    },
+    "facets": [
+      "plantCode",
+      "fuel2002",
+      "fuelType",
+      "state",
+      "primeMover"
+    ],
+    "frequencies": [
+      "monthly",
+      "quarterly",
+      "annual"
+    ],
+    "start": "2001-01",
+    "end": "2026-08"
+  },
+  "electricity/rto/region-data": {
+    "name": "Hourly Demand, Demand Forecast, Generation, and Interchange",
+    "description": "Hourly demand, day-ahead demand forecast, net generation, and interchange by balancing authority.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor",
+    "data": {
+      "value": {
+        "alias": "Demand, Demand Forecast, Net Generation, or Interchange",
+        "units": "megawatthours"
+      }
+    },
+    "facets": [
+      "respondent",
+      "type"
+    ],
+    "frequencies": [
+      "hourly",
+      "local-hourly"
+    ],
+    "start": "2019-01-01T00",
+    "end": "2026-11-18T08"
+  },
+  "electricity/rto/fuel-type-data": {
+    "name": "Hourly Generation by Energy Source",
+    "description": "Hourly net generation by balancing authority and energy source.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor",
+    "data": {
+      "value": {
+        "alias": "Net Generation",
+        "units": "megawatthours"
+      }
+    },
+    "facets": [
+      "respondent",
+      "fueltype"
+    ],
+    "frequencies": [
+      "hourly",
+      "local-hourly"
+    ],
+    "start": "2019-01-01T00",
+    "end": "2026-11-16T07"
+  },
+  "electricity/rto/region-sub-ba-data": {
+    "name": "Hourly Demand by Subregion",
+    "description": "Hourly demand by balancing authority subregion.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor",
+    "data": {
+      "value": {
+        "alias": "Demand",
+        "units": "megawatthours"
+      }
+    },
+    "facets": [
+      "subba",
+      "parent"
+    ],
+    "frequencies": [
+      "hourly",
+      "local-hourly"
+    ],
+    "start": "2019-01-01T00",
+    "end": "2026-11-17T07"
+  },
+  "electricity/rto/interchange-data": {
+    "name": "Hourly Interchange by Neighboring Balancing Authority",
+    "description": "Daily interchange between neighboring balancing authorities.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor",
+    "data": {
+      "value": {
+        "alias": "Interchange",
+        "units": "megawatthours"
+      }
+    },
+    "facets": [
+      "fromba",
+      "toba"
+    ],
+    "frequencies": [
+      "hourly",
+      "local-hourly"
+    ],
+    "start": "2019-01-01T00",
+    "end": "2026-11-16T07"
+  },
+  "electricity/rto/daily-region-data": {
+    "name": "Daily Demand, Demand Forecast, Generation, and Interchange",
+    "description": "Daily demand, day-ahead demand forecast, net generation, and interchange by balancing authority.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor",
+    "data": {
+      "value": {
+        "alias": "Demand, Demand Forecast, Net Generation, or Interchange",
+        "units": "megawatthours"
+      }
+    },
+    "facets": [
+      "respondent",
+      "type",
+      "timezone"
+    ],
+    "frequencies": [
+      "daily"
+    ],
+    "start": "2019-01-01",
+    "end": "2026-11-17"
+  },
+  "electricity/rto/daily-region-sub-ba-data": {
+    "name": "Daily Demand by Subregion",
+    "description": "Daily demand by balancing authority subregion.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor",
+    "data": {
+      "value": {
+        "alias": "Demand",
+        "units": "megawatthours"
+      }
+    },
+    "facets": [
+      "subba",
+      "parent",
+      "timezone"
+    ],
+    "frequencies": [
+      "daily"
+    ],
+    "start": "2019-01-01",
+    "end": "2026-11-16"
+  },
+  "electricity/rto/daily-fuel-type-data": {
+    "name": "Daily Generation by Energy Source",
+    "description": "Daily net generation by balancing authority and energy source.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor",
+    "data": {
+      "value": {
+        "alias": "Net Generation",
+        "units": "megawatthours"
+      }
+    },
+    "facets": [
+      "respondent",
+      "fueltype",
+      "timezone"
+    ],
+    "frequencies": [
+      "daily"
+    ],
+    "start": "2019-01-01",
+    "end": "2026-11-15"
+  },
+  "electricity/rto/daily-interchange-data": {
+    "name": "Daily Interchange by Neighboring Balancing Authority",
+    "description": "Hourly interchange between neighboring balancing authorities.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor",
+    "data": {
+      "value": {
+        "alias": "Interchange",
+        "units": "megawatthours"
+      }
+    },
+    "facets": [
+      "fromba",
+      "toba",
+      "timezone"
+    ],
+    "frequencies": [
+      "daily"
+    ],
+    "start": "2019-01-01",
+    "end": "2026-11-15"
+  },
+  "electricity/state-electricity-profiles/emissions-by-state-by-fuel": {
+    "name": "Emissions from Energy Consumption at Conventional Power Plants and Combined-Heat-and-Power Plants",
+    "description": "Emissions from electricity generation and the production of useful thermal output at conventional power plants and combined-heat-and-power plants.\n    See Electric Power Annual, Technical Notes for a description of the sources and methodology used to develop the emissions estimates.\n    Sources: Forms EIA-860, EIA-923, and calculations made by the Office of  Energy Production, Conversion & Delivery (EPCD)\n    Product: State Electricity Profiles, Table 7",
+    "data": {
+      "so2-rate-lbs-mwh": {
+        "alias": "SO2 Emissions Rate per MWh",
+        "units": "pounds per megawatthour"
+      },
+      "so2-short-tons": {
+        "alias": "SO2 Emissions",
+        "units": "short tons"
+      },
+      "nox-rate-lbs-mwh": {
+        "alias": "NOx Emissions Rate per MWh",
+        "units": "pounds per megawatthour"
+      },
+      "nox-short-tons": {
+        "alias": "NOx Emissions",
+        "units": "short tons"
+      },
+      "co2-rate-lbs-mwh": {
+        "alias": "CO2 Emissions Rate per MWh",
+        "units": "pounds per megawatthour"
+      },
+      "co2-thousand-metric-tons": {
+        "alias": "CO2 Emissions",
+        "units": "thousand metric tons"
+      }
+    },
+    "facets": [
+      "stateid",
+      "fuelid"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1990",
+    "end": "2025"
+  },
+  "electricity/state-electricity-profiles/source-disposition": {
+    "name": " Supply and disposition of electricity",
+    "description": "Supply and disposition of electricity by state.\n    Sources: Forms EIA-860, EIA-861, and EIA-923\n    Product: State Electricity Profiles, Table 10",
+    "data": {
+      "electric-utilities": {
+        "alias": "Net Generation from Electric Utilities",
+        "units": "megawatthours"
+      },
+      "independent-power-producers": {
+        "alias": "Net Generation from Independent Power Producers, Non-Combined Heat and Power",
+        "units": "megawatthours"
+      },
+      "combined-heat-and-pwr-elect": {
+        "alias": "Net Generation from Independent Power Producers, Combined Heat and Power",
+        "units": "megawatthours"
+      },
+      "elect-pwr-sector-gen-subtotal": {
+        "alias": "Net Generation from Electric Power Sector",
+        "units": "megawatthours"
+      },
+      "combined-heat-and-pwr-comm": {
+        "alias": "Net Generation from Commercial Sector",
+        "units": "megawatthours"
+      },
+      "combined-heat-and-pwr-indust": {
+        "alias": "Net Generation from Industrial Sector",
+        "units": "megawatthours"
+      },
+      "indust-and-comm-gen-subtotal": {
+        "alias": "Net Generation from Industrial and Commercial Sectors",
+        "units": "megawatthours"
+      },
+      "total-net-generation": {
+        "alias": "Net Generation from All Sectors",
+        "units": "megawatthours"
+      },
+      "total-international-imports": {
+        "alias": "Total International Imports",
+        "units": "megawatthours"
+      },
+      "total-supply": {
+        "alias": "Total Supply",
+        "units": "megawatthours"
+      },
+      "full-service-providers": {
+        "alias": "Retail Sales of Electricity by Full Service Providers",
+        "units": "megawatthours"
+      },
+      "energy-only-providers": {
+        "alias": "Retail Sales of Electrcity by Energy-Only Providers",
+        "units": "megawatthours"
+      },
+      "facility-direct": {
+        "alias": "Retail Sales of Electricity Sold Directly by Commercial and Industrial Facilities",
+        "units": "megawatthours"
+      },
+      "total-elect-indust": {
+        "alias": "Retail Sales of Electricity, Total Electric Industry",
+        "units": "megawatthours"
+      },
+      "direct-use": {
+        "alias": "Direct Use of Generation by Commercial and Industrial Facilities",
+        "units": "megawatthours"
+      },
+      "total-international-exports": {
+        "alias": "Total International Exports",
+        "units": "megawatthours"
+      },
+      "estimated-losses": {
+        "alias": "Estimated Losses Incurred in Transmission and Distribution",
+        "units": "megawatthours"
+      },
+      "net-interstate-trade": {
+        "alias": "Net Interstate Imports",
+        "units": "megawatthours"
+      },
+      "unaccounted": {
+        "alias": "Unaccounted Electricity",
+        "units": "megawatthours"
+      },
+      "total-disposition": {
+        "alias": "Total Disposition",
+        "units": "megawatthours"
+      },
+      "net-trade-index": {
+        "alias": "Net Trade Index Ratio",
+        "units": "ratio"
+      }
+    },
+    "facets": [
+      "state"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1990",
+    "end": "2025"
+  },
+  "electricity/state-electricity-profiles/capability": {
+    "name": "Generating Capacity",
+    "description": "Electric generating capacity (summer capacity) by state, energy source, and sector.\n    Source: Form EIA-860\n    Product: State Electricity Profiles, Table 4",
+    "data": {
+      "capability": {
+        "alias": "Net Summer Capacity ",
+        "units": "megawatts"
+      }
+    },
+    "facets": [
+      "stateId",
+      "producertypeid",
+      "energysourceid"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1990",
+    "end": "2025"
+  },
+  "electricity/state-electricity-profiles/energy-efficiency": {
+    "name": "Costs and Savings from Energy Efficiency Programs",
+    "description": "Costs and savings from energy efficiency programs by state and sector\n    Source: Form EIA-861\n    Product: State Electricity Profiles, Table 13",
+    "data": {
+      "energy-savings": {
+        "alias": "Annual Energy Savings",
+        "units": "megawatthours"
+      },
+      "potential-peak-savings": {
+        "alias": "Peak Demand Savings",
+        "units": "megawatts"
+      },
+      "customer-incentive": {
+        "alias": "Cost of Customer Incentives",
+        "units": "thousand dollars"
+      },
+      "all-other-costs": {
+        "alias": "All Other Costs",
+        "units": "thousand dollars"
+      }
+    },
+    "facets": [
+      "state",
+      "timePeriod",
+      "sector"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2013",
+    "end": "2025"
+  },
+  "electricity/state-electricity-profiles/net-metering": {
+    "name": "Electricity Net Metering: Customers and Capacity",
+    "description": "Electricity net metering customer counts and capacity by state, sector, and generating technology.\n    Source: Form EIA-861\n    Product: State Electricity Profiles, Table 11",
+    "data": {
+      "capacity": {
+        "alias": null,
+        "units": "megawatts"
+      },
+      "customers": {
+        "alias": "Customer Count",
+        "units": "number of customers"
+      }
+    },
+    "facets": [
+      "state",
+      "technology",
+      "sector"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2013",
+    "end": "2025"
+  },
+  "electricity/state-electricity-profiles/meters": {
+    "name": "Advanced Metering Infrastructure",
+    "description": "Advanced meterting counts by technology, state, and sector\n    Source: Forms EIA-861, EIA-861S\n    Product: State Electricity Profiles, Table 12",
+    "data": {
+      "meters": {
+        "alias": "Meter Count",
+        "units": "number of meters"
+      }
+    },
+    "facets": [
+      "state",
+      "technology",
+      "sector"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2013",
+    "end": "2025"
+  },
+  "electricity/state-electricity-profiles/summary": {
+    "name": "State Rankings for Key Statistics",
+    "description": "State rankings for key electricity statistics by state\n    Source: Forms EIA-860, EIA-861, EIA-923\n    Product: State Electricity Profiles, Table 1",
+    "data": {
+      "net-summer-capacity": {
+        "alias": "Net Summer Capacity, All Sectors",
+        "units": "megawatts"
+      },
+      "net-summer-capacity-rank": {
+        "alias": "Net Summer Capacity, All Sectors (U.S. Rank)",
+        "units": "rank"
+      },
+      "capacity-elec-utilities": {
+        "alias": "Net Summer Capacity, Electric Power Sector",
+        "units": "megawatts"
+      },
+      "capacity-elect-utilities-rank": {
+        "alias": "Average Retail Price of Electricity (U.S. Rank)",
+        "units": "rank"
+      },
+      "capacity-ipp": {
+        "alias": "Net Summer Capacity, Independent Power Producers and Industrial / Commercial Sectors",
+        "units": "megawatts"
+      },
+      "capacity-ipp-rank": {
+        "alias": "Net Summer Capacity, Independent Power Producers and Industrial / Commercial Sectors (U.S. Rank)",
+        "units": "rank"
+      },
+      "net-generation": {
+        "alias": "Net Generation, All Sectors",
+        "units": "megawatthours"
+      },
+      "net-generation-rank": {
+        "alias": "Net Generation, All Sectors (U.S. Rank)",
+        "units": "rank"
+      },
+      "generation-elect-utils": {
+        "alias": "Net Generation, Electric Power Sector",
+        "units": "megawatthours"
+      },
+      "generation-elect-utils-rank": {
+        "alias": "Net Generation, Electric Power Sector (U.S. Rank)",
+        "units": "rank"
+      },
+      "generation-ipp": {
+        "alias": "Net Generation, Independent Power Producers and Industrial / Commercial Sectors",
+        "units": "megawatthours"
+      },
+      "generation-ipp-rank": {
+        "alias": "Net Generation, Independent Power Producers and Industrial / Commercial Sectors (U.S. Rank)",
+        "units": "rank"
+      },
+      "sulfer-dioxide": {
+        "alias": "SO2 Emissions",
+        "units": "short tons"
+      },
+      "sulfer-dioxide-rank": {
+        "alias": "SO2 Emissions (U.S. Rank)",
+        "units": "rank"
+      },
+      "nitrogen-oxide": {
+        "alias": "NOx Emissions",
+        "units": "short tons"
+      },
+      "nitrogen-oxide-rank": {
+        "alias": "NOx Emissions (U.S. Rank)",
+        "units": "rank"
+      },
+      "carbon-dioxide": {
+        "alias": "CO2 Emissions",
+        "units": "thousand metric tons"
+      },
+      "carbon-dioxide-rank": {
+        "alias": "CO2 Emissions (U.S. Rank)",
+        "units": "rank"
+      },
+      "sulfer-dioxide-lbs": {
+        "alias": "SO2 Emissions Rate per MWh",
+        "units": "pounds per megawatthour"
+      },
+      "sulfer-dioxide-rank-lbs": {
+        "alias": "SO2 Emissions Rate per MWh (U.S. Rank)",
+        "units": "rank"
+      },
+      "nitrogen-oxide-lbs": {
+        "alias": "NOx Emissions Rate per MWh",
+        "units": "pounds per megawatthour"
+      },
+      "nitrogen-oxide-rank-lbs": {
+        "alias": "NOx Emissions Rate per MWh (U.S. Rank)",
+        "units": "rank"
+      },
+      "carbon-dioxide-lbs": {
+        "alias": "CO2 Emissions Rate per MWh",
+        "units": "pounds per megawatthour"
+      },
+      "carbon-dioxide-rank-lbs": {
+        "alias": "CO2 Emissions Rate per MWh (U.S. Rank)",
+        "units": "rank"
+      },
+      "total-retail-sales": {
+        "alias": "Retail Sales of Electricity, Total Electric Industry ",
+        "units": "megawatthours"
+      },
+      "total-retail-sales-rank": {
+        "alias": "Retail Sales of Electricity, Total Electric Industry (U.S. Rank)",
+        "units": "rank"
+      },
+      "fsp-service-provider-sales": {
+        "alias": "Retail Sales of Electrcity by Full Service Providers and Electricity Sold Directly by Commercial and Industrial  Facilities",
+        "units": "megawatthours"
+      },
+      "fsp-sales-rank": {
+        "alias": "Retail Sales of Electrcity by Full Service Providers and Electricity Sold Directly by Commercial and Industrial Facilities (U.S. Rank)",
+        "units": "rank"
+      },
+      "eop-sales": {
+        "alias": "Retail Sales of Electrcity by Energy-Only Providers",
+        "units": "megawatthours"
+      },
+      "eop-sales-rank": {
+        "alias": "Retail Sales of Electrcity by Energy-Only Providers (U.S. Rank)",
+        "units": "rank"
+      },
+      "direct-use": {
+        "alias": "Direct Use of Generation by Commercial and Industrial Facilities",
+        "units": "megawatthours"
+      },
+      "direct-use-rank": {
+        "alias": "Direct Use of Generation by Commercial and Industrial Facilities (U.S. Rank)",
+        "units": "rank"
+      },
+      "average-retail-price": {
+        "alias": "Average Retail Price of Electricity",
+        "units": "cents per kilowatthour"
+      },
+      "average-retail-price-rank": {
+        "alias": "Average Retail Price of Electricity (U.S. Rank)",
+        "units": "rank"
+      },
+      "prime-source": {
+        "alias": "Prime Source",
+        "units": null
+      }
+    },
+    "facets": [
+      "stateID"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2008",
+    "end": "2025"
+  },
+  "natural-gas/sum/snd": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-08"
+  },
+  "natural-gas/sum/lsum": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-08"
+  },
+  "natural-gas/sum/sndm": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly"
+    ],
+    "start": "1973-01",
+    "end": "2026-08"
+  },
+  "natural-gas/pri/sum": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-08"
+  },
+  "natural-gas/pri/fut": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "weekly",
+      "annual",
+      "daily"
+    ],
+    "start": "1993-12-24",
+    "end": "2026-11-06"
+  },
+  "natural-gas/pri/rescom": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1989-01",
+    "end": "2026-08"
+  },
+  "natural-gas/enr/sum": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1925",
+    "end": "2021"
+  },
+  "natural-gas/enr/cplc": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2009",
+    "end": "2021"
+  },
+  "natural-gas/enr/dry": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1925",
+    "end": "2021"
+  },
+  "natural-gas/enr/wals": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1979",
+    "end": "2021"
+  },
+  "natural-gas/enr/nang": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1979",
+    "end": "2021"
+  },
+  "natural-gas/enr/adng": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1979",
+    "end": "2021"
+  },
+  "natural-gas/enr/ngl": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1979",
+    "end": "2008"
+  },
+  "natural-gas/enr/ngpl": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1979",
+    "end": "2021"
+  },
+  "natural-gas/enr/lc": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1979",
+    "end": "2021"
+  },
+  "natural-gas/enr/coalbed": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1989",
+    "end": "2019"
+  },
+  "natural-gas/enr/shalegas": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2007",
+    "end": "2021"
+  },
+  "natural-gas/enr/deep": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1992",
+    "end": "2007"
+  },
+  "natural-gas/enr/nprod": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1996",
+    "end": "2021"
+  },
+  "natural-gas/enr/drill": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-02"
+  },
+  "natural-gas/enr/wellend": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2012-12"
+  },
+  "natural-gas/enr/seis": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly"
+    ],
+    "start": "2000-01",
+    "end": "2011-07"
+  },
+  "natural-gas/enr/wellfoot": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1949",
+    "end": "2008"
+  },
+  "natural-gas/enr/welldep": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1949",
+    "end": "2008"
+  },
+  "natural-gas/enr/wellcost": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1960",
+    "end": "2007"
+  },
+  "natural-gas/prod/oilwells": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2011",
+    "end": "2020"
+  },
+  "natural-gas/prod/sum": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-08"
+  },
+  "natural-gas/prod/whv": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-08"
+  },
+  "natural-gas/prod/off": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1997-01",
+    "end": "2026-08"
+  },
+  "natural-gas/prod/deep": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1992",
+    "end": "2007"
+  },
+  "natural-gas/prod/ngpl": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1979",
+    "end": "2021"
+  },
+  "natural-gas/prod/lc": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1979",
+    "end": "2021"
+  },
+  "natural-gas/prod/coalbed": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1989",
+    "end": "2019"
+  },
+  "natural-gas/prod/shalegas": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2007",
+    "end": "2021"
+  },
+  "natural-gas/prod/ss": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1980-01",
+    "end": "2026-08"
+  },
+  "natural-gas/prod/wells": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1989",
+    "end": "2020"
+  },
+  "natural-gas/prod/pp": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-08"
+  },
+  "natural-gas/move/impc": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-08"
+  },
+  "natural-gas/move/expc": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-08"
+  },
+  "natural-gas/move/state": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-08"
+  },
+  "natural-gas/move/poe1": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-08"
+  },
+  "natural-gas/move/poe2": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-08"
+  },
+  "natural-gas/move/ist": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1930",
+    "end": "2024"
+  },
+  "natural-gas/stor/wkly": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "weekly"
+    ],
+    "start": "2010-01-01",
+    "end": "2026-11-06"
+  },
+  "natural-gas/stor/sum": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-08"
+  },
+  "natural-gas/stor/type": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-08"
+  },
+  "natural-gas/stor/lng": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1969",
+    "end": "2024"
+  },
+  "natural-gas/stor/cap": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1989-01",
+    "end": "2026-08"
+  },
+  "natural-gas/cons/sum": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-08"
+  },
+  "natural-gas/cons/num": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1967",
+    "end": "2024"
+  },
+  "natural-gas/cons/pns": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1993",
+    "end": "2024"
+  },
+  "natural-gas/cons/acct": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1982",
+    "end": "2024"
+  },
+  "natural-gas/cons/heat": {
+    "name": null,
+    "description": "EIA natural gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "2012-01",
+    "end": "2026-08"
+  },
+  "nuclear-outages/us-nuclear-outages": {
+    "name": "U.S. Nuclear Outages",
+    "description": "Nuclear outages daily with capacity, outages, and percent outage.  \n        Source:   Nuclear Regulatory Commission's Power Reactor Status Report.  \n        Interactive data report:  Daily Status of Nuclear Reactors.",
+    "data": {
+      "capacity": {
+        "alias": null,
+        "units": "megawatts"
+      },
+      "outage": {
+        "alias": null,
+        "units": "megawatts"
+      },
+      "percentOutage": {
+        "alias": null,
+        "units": "percent"
+      }
+    },
+    "facets": [],
+    "frequencies": [
+      "daily"
+    ],
+    "start": "2007-01-01",
+    "end": "2026-11-16"
+  },
+  "nuclear-outages/generator-nuclear-outages": {
+    "name": "Generator Level Nuclear Outages",
+    "description": "Generator level nuclear outages with capacity, outages, and percent outage.  \n        Source:   Nuclear Regulatory Commission's Power Reactor Status Report.  \n        Interactive data report:  Daily Status of Nuclear Reactors.",
+    "data": {
+      "capacity": {
+        "alias": null,
+        "units": "megawatts"
+      },
+      "outage": {
+        "alias": null,
+        "units": "megawatts"
+      },
+      "percentOutage": {
+        "alias": null,
+        "units": "percent"
+      }
+    },
+    "facets": [
+      "facility",
+      "generator"
+    ],
+    "frequencies": [
+      "daily"
+    ],
+    "start": "2007-01-01",
+    "end": "2026-11-16"
+  },
+  "nuclear-outages/facility-nuclear-outages": {
+    "name": "Facility Level Nuclear Outages",
+    "description": "Facility level nuclear outages with capacity, outages, and percent outage.  \n        Source:   Nuclear Regulatory Commission's Power Reactor Status Report.  \n        Interactive data report:  Daily Status of Nuclear Reactors.",
+    "data": {
+      "capacity": {
+        "alias": null,
+        "units": "megawatts"
+      },
+      "outage": {
+        "alias": null,
+        "units": "megawatts"
+      },
+      "percentOutage": {
+        "alias": null,
+        "units": "percent"
+      }
+    },
+    "facets": [
+      "facility"
+    ],
+    "frequencies": [
+      "daily"
+    ],
+    "start": "2007-01-01",
+    "end": "2026-11-16"
+  },
+  "petroleum/sum/b100": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "2009-01",
+    "end": "2020-12"
+  },
+  "petroleum/sum/snd": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1920-01",
+    "end": "2026-08"
+  },
+  "petroleum/sum/sndw": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "weekly",
+      "four-week-average"
+    ],
+    "start": "1982-08-20",
+    "end": "2026-11-06"
+  },
+  "petroleum/sum/crdsnd": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1920-01",
+    "end": "2026-08"
+  },
+  "petroleum/sum/mkt": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1975-07",
+    "end": "2026-08"
+  },
+  "petroleum/pri/gnd": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "weekly",
+      "annual"
+    ],
+    "start": "1990-08-20",
+    "end": "2026-11-09"
+  },
+  "petroleum/pri/spt": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "weekly",
+      "annual",
+      "daily"
+    ],
+    "start": "1986-01-03",
+    "end": "2026-11-06"
+  },
+  "petroleum/pri/fut": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "weekly",
+      "annual",
+      "daily"
+    ],
+    "start": "1980-01-04",
+    "end": "2024-04-05"
+  },
+  "petroleum/pri/wfr": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "weekly"
+    ],
+    "start": "1990-10-01",
+    "end": "2026-11-09"
+  },
+  "petroleum/pri/refmg": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1983-01",
+    "end": "2022-03"
+  },
+  "petroleum/pri/refmg2": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1994-01",
+    "end": "2022-03"
+  },
+  "petroleum/pri/refoth": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1975-07",
+    "end": "2022-03"
+  },
+  "petroleum/pri/allmg": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1983-01",
+    "end": "2022-03"
+  },
+  "petroleum/pri/dist": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1983-01",
+    "end": "2022-03"
+  },
+  "petroleum/pri/prop": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1993-10",
+    "end": "2022-03"
+  },
+  "petroleum/pri/resid": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1983-01",
+    "end": "2022-03"
+  },
+  "petroleum/pri/dfp1": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1974-01",
+    "end": "2026-08"
+  },
+  "petroleum/pri/dfp2": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1977-07",
+    "end": "2026-08"
+  },
+  "petroleum/pri/dfp3": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1993-10",
+    "end": "2026-08"
+  },
+  "petroleum/pri/rac2": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1974-01",
+    "end": "2026-09"
+  },
+  "petroleum/pri/imc1": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-10",
+    "end": "2026-08"
+  },
+  "petroleum/pri/imc2": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1983-01",
+    "end": "2026-08"
+  },
+  "petroleum/pri/imc3": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1983-01",
+    "end": "2026-08"
+  },
+  "petroleum/pri/land1": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-08"
+  },
+  "petroleum/pri/land2": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1983-01",
+    "end": "2026-08"
+  },
+  "petroleum/pri/land3": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1983-01",
+    "end": "2026-08"
+  },
+  "petroleum/pri/ipct": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1983-01",
+    "end": "2026-08"
+  },
+  "petroleum/crd/pres": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1899",
+    "end": "2021"
+  },
+  "petroleum/crd/cplc": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2009",
+    "end": "2021"
+  },
+  "petroleum/crd/nprod": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1996",
+    "end": "2021"
+  },
+  "petroleum/crd/crpdn": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1920-01",
+    "end": "2026-08"
+  },
+  "petroleum/crd/api": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly"
+    ],
+    "start": "2015-01",
+    "end": "2024-02"
+  },
+  "petroleum/crd/gom": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1992",
+    "end": "2007"
+  },
+  "petroleum/crd/drill": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-02"
+  },
+  "petroleum/crd/wellend": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2012-12"
+  },
+  "petroleum/crd/seis": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly"
+    ],
+    "start": "2000-01",
+    "end": "2011-07"
+  },
+  "petroleum/crd/wellfoot": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1949",
+    "end": "2008"
+  },
+  "petroleum/crd/welldep": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1949",
+    "end": "2008"
+  },
+  "petroleum/crd/wellcost": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1960",
+    "end": "2007"
+  },
+  "petroleum/pnp/wiup": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "weekly",
+      "four-week-average"
+    ],
+    "start": "1982-08-20",
+    "end": "2026-11-06"
+  },
+  "petroleum/pnp/wprodrb": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "weekly",
+      "four-week-average"
+    ],
+    "start": "1982-08-20",
+    "end": "2026-11-06"
+  },
+  "petroleum/pnp/wprodr": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "weekly",
+      "four-week-average"
+    ],
+    "start": "2010-06-04",
+    "end": "2026-11-06"
+  },
+  "petroleum/pnp/wprodb": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "weekly",
+      "four-week-average"
+    ],
+    "start": "2010-06-04",
+    "end": "2026-11-06"
+  },
+  "petroleum/pnp/wprode": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "weekly",
+      "four-week-average"
+    ],
+    "start": "2010-06-04",
+    "end": "2026-11-06"
+  },
+  "petroleum/pnp/inpt": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1961-01",
+    "end": "2026-08"
+  },
+  "petroleum/pnp/inpt2": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1986-01",
+    "end": "2026-08"
+  },
+  "petroleum/pnp/inpt3": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "2005-01",
+    "end": "2026-08"
+  },
+  "petroleum/pnp/refp": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1936-01",
+    "end": "2026-08"
+  },
+  "petroleum/pnp/refp2": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1993-01",
+    "end": "2026-08"
+  },
+  "petroleum/pnp/refp3": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "2005-01",
+    "end": "2026-08"
+  },
+  "petroleum/pnp/oxy": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1981-01",
+    "end": "2026-08"
+  },
+  "petroleum/pnp/feedbiofuel": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly"
+    ],
+    "start": "2019-01",
+    "end": "2026-08"
+  },
+  "petroleum/pnp/capbio": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly"
+    ],
+    "start": "2021-01",
+    "end": "2026-08"
+  },
+  "petroleum/pnp/unc": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1985-01",
+    "end": "2026-08"
+  },
+  "petroleum/pnp/crq": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1985-01",
+    "end": "2026-08"
+  },
+  "petroleum/pnp/dwns": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1987-01",
+    "end": "2026-08"
+  },
+  "petroleum/pnp/pct": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1993-01",
+    "end": "2026-08"
+  },
+  "petroleum/pnp/cap1": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1982",
+    "end": "2026"
+  },
+  "petroleum/pnp/capchg": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1982",
+    "end": "2026"
+  },
+  "petroleum/pnp/capprod": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1982",
+    "end": "2026"
+  },
+  "petroleum/pnp/capfuel": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1985",
+    "end": "2025"
+  },
+  "petroleum/pnp/feedng": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2008",
+    "end": "2025"
+  },
+  "petroleum/pnp/capwork": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1982",
+    "end": "2026"
+  },
+  "petroleum/pnp/capshell": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1982",
+    "end": "2026"
+  },
+  "petroleum/pnp/caprec": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1981",
+    "end": "2025"
+  },
+  "petroleum/pnp/bioplfuel": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2021",
+    "end": "2025"
+  },
+  "petroleum/pnp/gp": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/expcp": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1981-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/wkly": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "weekly",
+      "four-week-average"
+    ],
+    "start": "1982-08-20",
+    "end": "2026-11-06"
+  },
+  "petroleum/move/wimpc": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "weekly",
+      "four-week-average"
+    ],
+    "start": "2010-06-04",
+    "end": "2026-11-06"
+  },
+  "petroleum/move/imp": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1920-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/imp2": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1981-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/res": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1936-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/exp": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1920-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/expc": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1920-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/neti": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1920-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/imc1": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-10",
+    "end": "2026-08"
+  },
+  "petroleum/move/imc2": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1983-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/imc3": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1983-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/land1": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1973-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/land2": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1983-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/land3": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1983-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/ipct": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1983-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/ptb": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1986-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/pipe": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1986-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/tb": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1986-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/netr": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1981-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/impcus": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1920-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/impcp": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1981-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/rail": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "2010-01",
+    "end": "2026-08"
+  },
+  "petroleum/move/railNA": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "2010-01",
+    "end": "2026-08"
+  },
+  "petroleum/stoc/ts": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1936-01",
+    "end": "2026-08"
+  },
+  "petroleum/stoc/wstk": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "weekly"
+    ],
+    "start": "1982-08-20",
+    "end": "2026-11-06"
+  },
+  "petroleum/stoc/typ": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1920-01",
+    "end": "2026-08"
+  },
+  "petroleum/stoc/st": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1993-01",
+    "end": "2026-08"
+  },
+  "petroleum/stoc/cu": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1981-01",
+    "end": "2026-08"
+  },
+  "petroleum/stoc/ref": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1981-01",
+    "end": "2026-08"
+  },
+  "petroleum/stoc/gp": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1993-01",
+    "end": "2026-08"
+  },
+  "petroleum/cons/wpsup": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "weekly",
+      "four-week-average"
+    ],
+    "start": "1990-11-09",
+    "end": "2026-11-06"
+  },
+  "petroleum/cons/psup": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1936-01",
+    "end": "2026-08"
+  },
+  "petroleum/cons/prim": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1983-01",
+    "end": "2022-03"
+  },
+  "petroleum/cons/refmg": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1983-01",
+    "end": "2022-03"
+  },
+  "petroleum/cons/refoth": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1983-01",
+    "end": "2022-03"
+  },
+  "petroleum/cons/refres": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "monthly",
+      "annual"
+    ],
+    "start": "1983-01",
+    "end": "2022-03"
+  },
+  "petroleum/cons/821dst": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1984",
+    "end": "2020"
+  },
+  "petroleum/cons/821dsta": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1984",
+    "end": "2020"
+  },
+  "petroleum/cons/821rsd": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1984",
+    "end": "2020"
+  },
+  "petroleum/cons/821rsda": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1984",
+    "end": "2020"
+  },
+  "petroleum/cons/821ker": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1984",
+    "end": "2020"
+  },
+  "petroleum/cons/821kera": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1984",
+    "end": "2020"
+  },
+  "petroleum/cons/821use": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1984",
+    "end": "2020"
+  },
+  "petroleum/cons/821usea": {
+    "name": null,
+    "description": "EIA petroleum gas survey data",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "duoarea",
+      "product",
+      "process",
+      "series"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1984",
+    "end": "2020"
+  },
+  "densified-biomass/capacity-by-region": {
+    "name": "Capacity by Region",
+    "description": "Densified biomass capacity includes number of facilities \r\n        and number of employees.  Source: EIA-63C  Report:  www.eia.gov/biomass/",
+    "data": {
+      "number-of-facilities": {
+        "alias": null,
+        "units": "number of facilities"
+      },
+      "capacity": {
+        "alias": null,
+        "units": "tons"
+      },
+      "number-of-fte-employees": {
+        "alias": null,
+        "units": "number of fte employees"
+      }
+    },
+    "facets": [
+      "region"
+    ],
+    "frequencies": [
+      "monthly"
+    ],
+    "start": "2016-01",
+    "end": "2026-05"
+  },
+  "densified-biomass/sales-and-price-by-region": {
+    "name": "Sales and Price by Region",
+    "description": "Densified biomass sales and average price by region.  \r\n        Source: EIA-63C  Report:  www.eia.gov/biomass/",
+    "data": {
+      "quantity": {
+        "alias": null,
+        "units": "tons"
+      },
+      "average-price": {
+        "alias": null,
+        "units": "USD per ton"
+      }
+    },
+    "facets": [
+      "region"
+    ],
+    "frequencies": [
+      "monthly"
+    ],
+    "start": "2016-01",
+    "end": "2026-05"
+  },
+  "densified-biomass/export-sales-and-price": {
+    "name": "Export Sales and Price",
+    "description": "Densified biomass export prices and quantity.  \r\n        Source: EIA-63C  Report:  www.eia.gov/biomass/",
+    "data": {
+      "quantity": {
+        "alias": null,
+        "units": "tons"
+      },
+      "average-price": {
+        "alias": null,
+        "units": "USD per ton"
+      }
+    },
+    "facets": [],
+    "frequencies": [
+      "monthly"
+    ],
+    "start": "2016-01",
+    "end": "2026-05"
+  },
+  "densified-biomass/feedstocks-and-cost": {
+    "name": "Feedstocks and Costs",
+    "description": "Densified biomass feedstocks and cost by type.  \r\n        Source: EIA-63C  Report:  www.eia.gov/biomass/",
+    "data": {
+      "quantity": {
+        "alias": null,
+        "units": "tons"
+      },
+      "cost": {
+        "alias": null,
+        "units": "USD per ton"
+      }
+    },
+    "facets": [
+      "fuelTypeId"
+    ],
+    "frequencies": [
+      "monthly"
+    ],
+    "start": "2016-01",
+    "end": "2026-05"
+  },
+  "densified-biomass/production-by-region": {
+    "name": "Production by Region",
+    "description": "Densified biomass production by region and fuel type.  \r\n        Source: EIA-63C  Report:  www.eia.gov/biomass/",
+    "data": {
+      "production": {
+        "alias": null,
+        "units": "tons"
+      }
+    },
+    "facets": [
+      "fuelTypeId",
+      "region"
+    ],
+    "frequencies": [
+      "monthly"
+    ],
+    "start": "2016-01",
+    "end": "2026-05"
+  },
+  "densified-biomass/characteristics-by-region": {
+    "name": "Characteristics by Region",
+    "description": "Densified biomass characteristics includes \r\n        fuel type, average ash, heat, and moisture content by region. \r\n        Source: EIA-63C  Report:  www.eia.gov/biomass/",
+    "data": {
+      "average-heat": {
+        "alias": null,
+        "units": "btu/lb"
+      },
+      "average-ash": {
+        "alias": null,
+        "units": "percent by weight"
+      },
+      "average-moisture": {
+        "alias": null,
+        "units": "percent by weight"
+      }
+    },
+    "facets": [
+      "fuelTypeId",
+      "region"
+    ],
+    "frequencies": [
+      "monthly"
+    ],
+    "start": "2016-01",
+    "end": "2026-05"
+  },
+  "densified-biomass/inventories-by-region": {
+    "name": "Inventories by Region",
+    "description": "Densified biomass inventories by region and fuel type.  \r\n        Source: EIA-63C  Report:  www.eia.gov/biomass/",
+    "data": {
+      "inventory": {
+        "alias": null,
+        "units": null
+      }
+    },
+    "facets": [
+      "fuelTypeId",
+      "region"
+    ],
+    "frequencies": [
+      "monthly"
+    ],
+    "start": "2016-01",
+    "end": "2026-05"
+  },
+  "densified-biomass/wood-pellet-plants": {
+    "name": "Wood Pellet Plant Capacity",
+    "description": "Details on wood pellet plants includes region, respondent, \r\n    capacity, and status.  Source: EIA-63C  Report:  www.eia.gov/biomass/",
+    "data": {
+      "capacity": {
+        "alias": null,
+        "units": "tons per year"
+      }
+    },
+    "facets": [
+      "region",
+      "respondent",
+      "stateId",
+      "status"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2016",
+    "end": "2026"
+  },
+  "aeo/2026": {
+    "name": null,
+    "description": "Annual Energy Outlook 2026",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "history",
+      "scenario",
+      "tableId",
+      "seriesId",
+      "regionId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2025",
+    "end": "2050"
+  },
+  "aeo/2025": {
+    "name": null,
+    "description": "Annual Energy Outlook 2025",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "history",
+      "scenario",
+      "tableId",
+      "seriesId",
+      "regionId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2024",
+    "end": "2050"
+  },
+  "aeo/2023": {
+    "name": null,
+    "description": "Annual Energy Outlook 2023",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "history",
+      "scenario",
+      "tableId",
+      "seriesId",
+      "regionId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2022",
+    "end": "2050"
+  },
+  "aeo/2022": {
+    "name": null,
+    "description": "Annual Energy Outlook 2022",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "history",
+      "scenario",
+      "tableId",
+      "seriesId",
+      "regionId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2021",
+    "end": "2050"
+  },
+  "aeo/2021": {
+    "name": null,
+    "description": "Annual Energy Outlook 2021",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "history",
+      "scenario",
+      "tableId",
+      "seriesId",
+      "regionId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2020",
+    "end": "2050"
+  },
+  "aeo/2020": {
+    "name": null,
+    "description": "Annual Energy Outlook 2020",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "history",
+      "scenario",
+      "tableId",
+      "seriesId",
+      "regionId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2018",
+    "end": "2050"
+  },
+  "aeo/2019": {
+    "name": null,
+    "description": "Annual Energy Outlook 2019",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "history",
+      "scenario",
+      "tableId",
+      "seriesId",
+      "regionId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2017",
+    "end": "2050"
+  },
+  "aeo/2018": {
+    "name": null,
+    "description": "Annual Energy Outlook 2018",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "history",
+      "scenario",
+      "tableId",
+      "seriesId",
+      "regionId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2016",
+    "end": "2050"
+  },
+  "aeo/2017": {
+    "name": null,
+    "description": "Annual Energy Outlook 2017",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "history",
+      "scenario",
+      "tableId",
+      "seriesId",
+      "regionId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2015",
+    "end": "2050"
+  },
+  "aeo/2016": {
+    "name": null,
+    "description": "Annual Energy Outlook 2016",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "history",
+      "scenario",
+      "tableId",
+      "seriesId",
+      "regionId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2013",
+    "end": "2040"
+  },
+  "aeo/2015": {
+    "name": null,
+    "description": "Annual Energy Outlook 2015",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "history",
+      "scenario",
+      "tableId",
+      "seriesId",
+      "regionId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2012",
+    "end": "2040"
+  },
+  "aeo/2014": {
+    "name": null,
+    "description": "Annual Energy Outlook 2014",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "history",
+      "scenario",
+      "tableId",
+      "seriesId",
+      "regionId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2011",
+    "end": "2040"
+  },
+  "aeo/2014-er": {
+    "name": null,
+    "description": "Annual Energy Outlook 2014 Early Release",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "history",
+      "scenario",
+      "tableId",
+      "seriesId",
+      "regionId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2011",
+    "end": "2040"
+  },
+  "ieo/2023": {
+    "name": null,
+    "description": "International Energy Outlook 2023",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "history",
+      "scenario",
+      "tableId",
+      "seriesId",
+      "regionId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2020",
+    "end": "2050"
+  },
+  "ieo/2021": {
+    "name": null,
+    "description": "International Energy Outlook 2021",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "history",
+      "scenario",
+      "tableId",
+      "seriesId",
+      "regionId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2010",
+    "end": "2050"
+  },
+  "ieo/2019": {
+    "name": null,
+    "description": "International Energy Outlook 2019",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "history",
+      "scenario",
+      "tableId",
+      "seriesId",
+      "regionId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2010",
+    "end": "2050"
+  },
+  "ieo/2017": {
+    "name": null,
+    "description": "International Energy Outlook 2017",
+    "data": {
+      "value": {}
+    },
+    "facets": [
+      "history",
+      "scenario",
+      "tableId",
+      "seriesId",
+      "regionId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "2010",
+    "end": "2050"
+  },
+  "co2-emissions/co2-emissions-aggregates": {
+    "name": "Total CO2 Emissions by Sector and Fuel - deprecated: see SEDS",
+    "description": "CO2 emission aggregates by fuel, state, and sector.  Report and documentation: https://www.eia.gov/environment/emissions/state/. \"This route is deprecated and no longer receiving fresh data.\n     For state-level CO2 emissions data, please use the /v2/seds/ API route.",
+    "data": {
+      "value": {
+        "alias": null,
+        "units": "million metric tons of CO2"
+      }
+    },
+    "facets": [
+      "sectorId",
+      "fuelId",
+      "stateId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1970",
+    "end": "2022"
+  },
+  "co2-emissions/co2-emissions-and-carbon-coefficients": {
+    "name": "CO2 Emissions and Carbon Coefficients by Product - deprecated: see SEDS",
+    "description": "CO2 emissions and carbon coefficients by fuel, state, and sector. Report and documentation: https://www.eia.gov/environment/emissions/state/.\n    \"This route is deprecated and no longer receiving fresh data. For state-level CO2 emissions data, please use the /v2/seds/ API route.",
+    "data": {
+      "emissions": {
+        "alias": null,
+        "units": "CO2 metric tons"
+      },
+      "carbon-coefficient": {
+        "alias": null,
+        "units": "Kilograms of CO2 per million Btu"
+      }
+    },
+    "facets": [
+      "seriesId",
+      "sectorId",
+      "fuelId",
+      "stateId"
+    ],
+    "frequencies": [
+      "annual"
+    ],
+    "start": "1980",
+    "end": "2018"
+  }
+}
